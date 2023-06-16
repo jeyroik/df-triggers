@@ -1,0 +1,23 @@
+{
+  "name": "jeyroik/df-triggers",
+  "description": "DF triggers",
+  "require": {
+    "jeyroik/df-applications": "1.*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9",
+    "jeyroik/extas-snuffbox": "1.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "deflou\\": "src/",
+      "tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "test": "vendor/bin/phpunit --testdox --coverage-clover=coverage.xml --whitelist=src tests"
+  },
+  "bin": [
+    "src/bin/df"
+  ]
+}
