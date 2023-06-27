@@ -42,8 +42,8 @@ use extas\interfaces\IItem;
  *              "title": "...",
  *              "description": "...",
  *              "value": {
- *                  "type": "event_value",
- *                  "value": [{"condition_plugin":"compare_default", "options": <mixed>}]
+ *                  "condition": {"plugin":"<condition.plugin.name>", "value": "..."},
+ *                  "value": {"plugin":"<value.plugin.name>", "value":"..."}
  *              }
  *          }
  *      }
