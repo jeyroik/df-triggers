@@ -13,26 +13,25 @@ use extas\interfaces\repositories\IRepository;
  */
 class TriggerService extends Item implements ITriggerSevice
 {
-    public function getTriggers(string $instanceId, string $eventName, array $vendorNames): array
+    public function getActiveTriggers(string $instanceId, string $eventName, array $vendorNames): array
     {
         return $this->triggers()->all([
             ITrigger::FIELD__EVENT_INSTANCE_ID => $instanceId,
             ITrigger::FIELD__EVENT => $eventName,
-            ITrigger::FIELD__VENDOR . '.' . IVendor::FIELD__NAME => $vendorNames
+            ITrigger::FIELD__VENDOR . '.' . IVendor::FIELD__NAME => $vendorNames,
+            ITrigger::FIELD__STATE => ETriggerState::Active->value
         ]);
     }
 
     public function isApplicableTrigger(IResolvedEvent $event, ITrigger $trigger): bool
     {
-        $triggerParams = $trigger->buildEvent()->buildParams()->buildItems();
+        $triggerEvent = $trigger->buildEvent();
         
-        foreach ($triggerParams as $tParam) {
-            if (!isset($event[$tParam->getName()])) {
-                return false;
-            }
+        foreach ($triggerEvent->eachParamValue() as $name => $triggerEventValue) {
 
-            // if (!$conditionService->areConditionsMet($tParam->getValue(), $event)) { return false; }
-            if (!$tParam->buildValue()->isApplicable($data[$tParam->getName()])) {
+            $incomeEventValue = $event[$name] ?? null;
+
+            if (!$triggerEventValue->met($incomeEventValue)) {
                 return false;
             }
         }

@@ -1,14 +1,14 @@
 <?php
 namespace deflou\components\triggers;
 
-use deflou\components\applications\events\Event;
-use deflou\components\applications\operations\Operation;
 use deflou\components\applications\vendors\THasVendor;
-use deflou\interfaces\applications\events\IEvent;
+use deflou\components\triggers\events\TriggerEvent;
+use deflou\components\triggers\operations\TriggerOperation;
 use deflou\interfaces\applications\IApplication;
-use deflou\interfaces\applications\operations\IOperation;
 use deflou\interfaces\instances\IInstance;
+use deflou\interfaces\triggers\events\ITriggerEvent;
 use deflou\interfaces\triggers\ITrigger;
+use deflou\interfaces\triggers\operations\ITriggerOperation;
 use extas\components\Item;
 use extas\components\THasCreatedAt;
 use extas\components\THasDescription;
@@ -33,9 +33,9 @@ class Trigger extends Item implements ITrigger
         return $this->config[static::FIELD__EVENT] ?? [];
     }
 
-    public function buildEvent(): IEvent
+    public function buildEvent(): ITriggerEvent
     {
-        return new Event($this->getEvent());
+        return new TriggerEvent($this->getEvent());
     }
 
     public function getOperation(): array
@@ -43,9 +43,9 @@ class Trigger extends Item implements ITrigger
         return $this->config[static::FIELD__OPERATION] ?? [];
     }
 
-    public function buildOperation(): IOperation
+    public function buildOperation(): ITriggerOperation
     {
-        return new Operation($this->getOperation());
+        return new TriggerOperation($this->getOperation());
     }
 
     public function getApplicationId(ETrigger $et): string

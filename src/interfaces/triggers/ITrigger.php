@@ -7,6 +7,8 @@ use deflou\interfaces\applications\IApplication;
 use deflou\interfaces\applications\operations\IOperation;
 use deflou\interfaces\applications\vendors\IHaveVendor;
 use deflou\interfaces\instances\IInstance;
+use deflou\interfaces\triggers\events\ITriggerEvent;
+use deflou\interfaces\triggers\operations\ITriggerOperation;
 use extas\interfaces\IHasCreatedAt;
 use extas\interfaces\IHasDescription;
 use extas\interfaces\IHasState;
@@ -42,8 +44,8 @@ use extas\interfaces\IItem;
  *              "title": "...",
  *              "description": "...",
  *              "value": {
- *                  "condition": {"plugin":"<condition.plugin.name>", "value": "..."},
- *                  "value": {"plugin":"<value.plugin.name>", "value":"..."}
+ *                  "condition": {"plugin":"<condition.plugin.name>", "condition": "..."},//plugin: default_conditions, condition: eq
+ *                  "value": ""
  *              }
  *          }
  *      }
@@ -58,7 +60,6 @@ use extas\interfaces\IItem;
  *              "title": "...",
  *              "description": "...",
  *              "value": {
- *                  "type": "operation_value",
  *                  "value": "Got @event.param1@ on @now(Y.m.d H:i:s)@",
  *                  "plugins": ["event", "now"]
  *              }
@@ -84,10 +85,10 @@ interface ITrigger extends IItem, IHaveUUID, IHasDescription, IHasCreatedAt, IHa
     public const FIELD__OPERATION_INSTANCE_VERSION      = IETrigger::SHORT__OPERATION . IETrigger::FIELD__IV;
 
     public function getEvent(): array;
-    public function buildEvent(): IEvent;
+    public function buildEvent(): ITriggerEvent;
 
     public function getOperation(): array;
-    public function buildOperation(): IOperation;
+    public function buildOperation(): ITriggerOperation;
 
     public function getApplicationId(ETrigger $et): string;
     public function getApplication(ETrigger $et): ?IApplication;

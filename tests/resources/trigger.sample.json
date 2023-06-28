@@ -1,0 +1,49 @@
+{
+    "title": "Test trigger",
+    "description": "Test trigger",
+    "eaid": "<uuid>",
+    "eav": "1.0.0",
+    "eiid": "<uuid>",
+    "eiv": "1.0.0",
+    "oaid": "<uuid>",
+    "oav": "1.0.0",
+    "oiid": "<uuid>",
+    "oiv": "1.0.0",
+    "created_at": "",
+    "vendor": {
+      "name": "..."
+    },
+    "state": "active",
+    "event": {
+        "title": "Test event",
+        "description": "Test event",
+        "name": "test_event",
+        "params": {
+            "param1": {
+                "name": "param1",
+                "title": "Param 1",
+                "description": "Param 1",
+                "value": {
+                    "condition": {"plugin":"basic_conditions", "condition": "eq"},
+                    "value": "test"
+                }
+            }
+        }
+    },
+    "operation": {
+        "title": "Test operation",
+        "description": "Test operation",
+        "name": "test_operation",
+        "params": {
+            "param2": {
+                "name": "param2",
+                "title": "Param 2",
+                "description": "Param 2",
+                "value": {
+                    "value": "Got @event.param1@ on @now(Y.m.d H:i:s)@",
+                    "plugins": ["event", "now"]
+                }
+            }
+        }
+    }
+   }
