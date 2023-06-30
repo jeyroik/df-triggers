@@ -1,5 +1,5 @@
 <?php
-namespace deflou\components\extensions\instanes;
+namespace deflou\components\extensions\instances;
 
 use deflou\interfaces\extensions\instances\IExtensionInstanceResolver;
 use deflou\interfaces\instances\IInstance;

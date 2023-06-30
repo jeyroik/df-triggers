@@ -2,7 +2,7 @@
 
 use deflou\components\applications\Application;
 use deflou\components\applications\EStates;
-use deflou\components\extensions\instanes\ExtensionInstanceResolver;
+use deflou\components\extensions\instances\ExtensionInstanceResolver;
 use deflou\components\instances\InstanceService;
 use deflou\components\resolvers\operations\ResolvedOperationHttp;
 use deflou\components\resolvers\ResolverHttp;
@@ -241,13 +241,13 @@ class TriggerTest extends TestCase
         ];
         $trigger1->setOperation($opData);
         $this->assertEquals($opData, $trigger1->getOperation());
-        ETriggerState::Active->activate($trigger);
-        $trigger1->triggers()->update($trigger1);
-
+        ETriggerState::Active->activate($trigger1);
+        
         $trigger1->setApplicationId(ETrigger::Operation, $app->getId());
         $trigger1->setInstanceId(ETrigger::Operation, $instance->getId());
         $trigger1->setApplicationVersion(ETrigger::Operation, $app->getVersion());
         $trigger1->setInstanceVersion(ETrigger::Operation, $instance->getVersion());
+        $trigger1->triggers()->update($trigger1);
 
         $trigger2 = $triggerService->createTriggerForInstance($instance, 'vendor0');
         $trigger2->setEvent([
@@ -272,7 +272,6 @@ class TriggerTest extends TestCase
         ETriggerState::Active->activate($trigger3);
         $trigger1->triggers()->update($trigger3);
 
-        print_r($trigger1->triggers()->all([]));
         $triggers = $triggerService->getActiveTriggers($instance->getId(), 'test_event', ['vendor0']);
         $this->assertCount(2, $triggers);
 

@@ -5,8 +5,8 @@ use deflou\interfaces\triggers\IETrigger;
 
 enum ETrigger: string implements IETrigger
 {
-    case Event = self::T__EVENT;
-    case Operation = self::T__OPERATION;
+    case Event = 'event';
+    case Operation = 'operation';
 
     public function getShort(): string
     {

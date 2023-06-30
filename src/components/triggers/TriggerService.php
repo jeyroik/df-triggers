@@ -4,6 +4,7 @@ namespace deflou\components\triggers;
 use deflou\interfaces\applications\vendors\IVendor;
 use deflou\interfaces\instances\IInstance;
 use deflou\interfaces\resolvers\events\IResolvedEvent;
+use deflou\interfaces\triggers\events\ITriggerEvent;
 use deflou\interfaces\triggers\ITrigger;
 use deflou\interfaces\triggers\ITriggerService;
 use extas\components\Item;
@@ -27,7 +28,13 @@ class TriggerService extends Item implements ITriggerService
             Trigger::FIELD__STATE => ETriggerState::OnConstruct->value,
             Trigger::FIELD__VENDOR => [
                 IVendor::FIELD__NAME => $vendorName
-            ]
+            ],
+            Trigger::FIELD__EVENT => [],
+            Trigger::FIELD__OPERATION => [],
+            Trigger::FIELD__OPERATION_APPLICATION_ID => '',
+            Trigger::FIELD__OPERATION_APPLICATION_VERSION => '',
+            Trigger::FIELD__OPERATION_INSTANCE_ID => '',
+            Trigger::FIELD__OPERATION_INSTANCE_VERSION => ''
         ]);
 
         return $this->triggers()->create($trigger);
@@ -37,7 +44,7 @@ class TriggerService extends Item implements ITriggerService
     {
         return $this->triggers()->all([
             ITrigger::FIELD__EVENT_INSTANCE_ID => $instanceId,
-            ITrigger::FIELD__EVENT => $eventName,
+            ITrigger::FIELD__EVENT . '.'. ITriggerEvent::FIELD__NAME => $eventName,
             ITrigger::FIELD__VENDOR . '.' . IVendor::FIELD__NAME => $vendorNames,
             ITrigger::FIELD__STATE => ETriggerState::Active->value
         ]);

@@ -2,7 +2,7 @@
   "name": "jeyroik/df-triggers",
   "description": "DF triggers",
   "require": {
-    "jeyroik/df-applications": "1.*",
+    "jeyroik/df-applications": "3.*",
     "jeyroik/extas-conditions": "2.*"
   },
   "require-dev": {
