@@ -7,8 +7,9 @@ use deflou\interfaces\resolvers\events\IResolvedEvent;
 use deflou\interfaces\resolvers\operations\IResolvedOperation;
 use deflou\interfaces\triggers\ITrigger;
 use extas\interfaces\IItem;
+use extas\interfaces\parameters\IHaveParams;
 
-interface IResolver extends IItem, IHaveInstance, IHaveApplication
+interface IResolver extends IItem, IHaveInstance, IHaveApplication, IHaveParams
 {
     public const SUBJECT = 'df.resolver';
     public const FIELD__EVENT_NAME = 'event_name';

@@ -86,9 +86,11 @@ interface ITrigger extends IItem, IHaveUUID, IHasDescription, IHasCreatedAt, IHa
 
     public function getEvent(): array;
     public function buildEvent(): ITriggerEvent;
+    public function setEvent(array $event): static;
 
     public function getOperation(): array;
     public function buildOperation(): ITriggerOperation;
+    public function setOperation(array $operation): static;
 
     public function getApplicationId(ETrigger $et): string;
     public function getApplication(ETrigger $et): ?IApplication;
@@ -96,4 +98,9 @@ interface ITrigger extends IItem, IHaveUUID, IHasDescription, IHasCreatedAt, IHa
     public function getInstance(ETrigger $et): ?IInstance;
     public function getApplicationVersion(ETrigger $et): string;
     public function getInstanceVersion(ETrigger $et): string;
+
+    public function setApplicationId(ETrigger $et, string $id): static;
+    public function setInstanceId(ETrigger $et, string $id): static;
+    public function setApplicationVersion(ETrigger $et, string $version): static;
+    public function setInstanceVersion(ETrigger $et, string $version): static;
 }

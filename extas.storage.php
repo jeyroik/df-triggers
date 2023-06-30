@@ -3,6 +3,7 @@
 use deflou\components\extensions\instanes\ExtensionInstanceResolver;
 use deflou\interfaces\extensions\instances\IExtensionInstanceResolver;
 use deflou\interfaces\instances\IInstance;
+use extas\components\repositories\RepoItem;
 use extas\interfaces\extensions\IExtension;
 
 return [

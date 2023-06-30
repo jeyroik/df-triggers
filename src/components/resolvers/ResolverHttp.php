@@ -49,6 +49,10 @@ class ResolverHttp extends Resolver implements IEventHttp, IOperationHttp
     public const OPTION__URL_PREFIX = '__url';
     public const OPTION__METHOD_PREFIX = '__method';
 
+    public const PARAM__REQUEST = 'request';
+    public const PARAM__HEADERS = 'headers';
+    public const PARAM__JSON = 'json';
+
     public function resolveEvent(): IResolvedEvent
     {
         $data = [
@@ -56,7 +60,12 @@ class ResolverHttp extends Resolver implements IEventHttp, IOperationHttp
             IResolvedEvent::FIELD__INSTANCE_ID => $this->getInstanceId(),
             IResolvedEvent::FIELD__APPLICATION_ID => $this->getApplicationId()
         ];
-        $data = array_merge($data, $this->getHttpRequest(), $this->getHttpHeaders(), $this->getHttpJson());
+        $params  = $this->buildParams();
+        $request = $params->hasOne(static::PARAM__REQUEST) ? $params->buildOne(static::PARAM__REQUEST)->getValue() : [];
+        $headers = $params->hasOne(static::PARAM__HEADERS) ? $params->buildOne(static::PARAM__HEADERS)->getValue() : [];
+        $json    = $params->hasOne(static::PARAM__JSON) ? $params->buildOne(static::PARAM__JSON)->getValue() : [];
+
+        $data = array_merge($data, $this->getHttpRequest($request), $this->getHttpHeaders($headers), $this->getHttpJson($json));
 
         return new ResolvedEvent($data);
     }

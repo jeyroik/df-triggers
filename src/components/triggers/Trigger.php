@@ -38,6 +38,13 @@ class Trigger extends Item implements ITrigger
         return new TriggerEvent($this->getEvent());
     }
 
+    public function setEvent(array $event): static
+    {
+        $this->config[static::FIELD__EVENT] = $event;
+
+        return $this;
+    }
+
     public function getOperation(): array
     {
         return $this->config[static::FIELD__OPERATION] ?? [];
@@ -48,9 +55,23 @@ class Trigger extends Item implements ITrigger
         return new TriggerOperation($this->getOperation());
     }
 
+    public function setOperation(array $operation): static
+    {
+        $this->config[static::FIELD__OPERATION] = $operation;
+
+        return $this;
+    }
+
     public function getApplicationId(ETrigger $et): string
     {
         return $this->config[$et->getAppIdField()] ?? '';
+    }
+
+    public function setApplicationId(ETrigger $et, string $id): static
+    {
+        $this->config[$et->getAppIdField()] = $id;
+
+        return $this;
     }
 
     public function getApplication(ETrigger $et): ?IApplication
@@ -65,9 +86,23 @@ class Trigger extends Item implements ITrigger
         return $this->config[$et->getAppVerField()] ?? '';
     }
 
+    public function setApplicationVersion(ETrigger $et, string $version): static
+    {
+        $this->config[$et->getAppVerField()] = $version;
+
+        return $this;
+    }
+
     public function getInstanceId(ETrigger $et): string
     {
         return $this->config[$et->getInstIdField()] ?? '';
+    }
+
+    public function setInstanceId(ETrigger $et, string $id): static
+    {
+        $this->config[$et->getInstIdField()] = $id;
+
+        return $this;
     }
 
     public function getInstance(ETrigger $et): ?IInstance
@@ -80,6 +115,13 @@ class Trigger extends Item implements ITrigger
     public function getInstanceVersion(ETrigger $et): string
     {
         return $this->config[$et->getInstVerField()] ?? '';
+    }
+
+    public function setInstanceVersion(ETrigger $et, string $version): static
+    {
+        $this->config[$et->getInstVerField()] = $version;
+
+        return $this;
     }
 
     protected function getSubjectForExtension(): string
