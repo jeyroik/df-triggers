@@ -31,11 +31,7 @@ class ResolvedOperationHttp extends Item implements IResolvedOperation, IHavePar
             try {
                 $response = $this->$method($this->getUrl(), $this->getParamsValues());
             } catch (\Exception $e) {
-                return new OperationResult([
-                    OperationResult::FIELD__STATUS => EResultStatus::Failed->value,
-                    OperationResult::FIELD__MESSAGE => $e->getMessage(),
-                    OperationResult::FIELD__DATA => []
-                ]);
+                return $this->makeFailedResult($e->getMessage());
             }
             $body = $response->getBody() . '';
             $data = [];
@@ -52,11 +48,7 @@ class ResolvedOperationHttp extends Item implements IResolvedOperation, IHavePar
             ]);
         }
 
-        return new OperationResult([
-            OperationResult::FIELD__STATUS => EResultStatus::Failed->value,
-            OperationResult::FIELD__MESSAGE => 'failed',
-            OperationResult::FIELD__DATA => []
-        ]);
+        return $this->makeFailedResult('failed');
     }
 
     public function getMethod(): string
@@ -67,6 +59,15 @@ class ResolvedOperationHttp extends Item implements IResolvedOperation, IHavePar
     public function getUrl(): string
     {
         return $this->config[static::FIELD__URL] ?? '';
+    }
+
+    protected function makeFailedResult(string $message): IOperationResult
+    {
+        return new OperationResult([
+            OperationResult::FIELD__STATUS => EResultStatus::Failed->value,
+            OperationResult::FIELD__MESSAGE => $message,
+            OperationResult::FIELD__DATA => []
+        ]);
     }
 
     protected function getSubjectForExtension(): string
