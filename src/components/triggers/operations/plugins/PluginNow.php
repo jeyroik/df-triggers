@@ -8,6 +8,6 @@ class PluginNow implements IPluginDispatcher
 {
     public function __invoke(string|int $triggerValue, IResolvedEvent $event): string|int
     {
-        return preg_replace_callback('/\@now\((.*)\)\@/i', function ($matches) {return date($matches[0]);}, $triggerValue);
+        return preg_replace_callback('/\@now\((.*)\)\@/i', function ($matches) { return date($matches[1]);}, $triggerValue);
     }
 }

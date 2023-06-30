@@ -17,7 +17,7 @@ class TriggerOperationValue extends Item implements ITriggerOperationValue
 
     public function setPlugins(array $plugins): static
     {
-        $this->config[static::FIELD__PLUGINS] = $plugins;
+        $this[static::FIELD__PLUGINS] = $plugins;
 
         return $this;
     }

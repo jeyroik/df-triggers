@@ -44,20 +44,20 @@ class OperationResult extends Item implements IOperationResult
 
     public function setStatus(EResultStatus $status): static
     {
-        $this->config[static::FIELD__STATUS] = $status->value;
+        $this[static::FIELD__STATUS] = $status->value;
 
         return $this;
     }
     public function setMessage(string $message): static
     {
-        $this->config[static::FIELD__MESSAGE] = $message;
+        $this[static::FIELD__MESSAGE] = $message;
 
         return $this;
     }
 
     public function setData(array $data): static
     {
-        $this->config[static::FIELD__DATA] = $data;
+        $this[static::FIELD__DATA] = $data;
 
         return $this;
     }

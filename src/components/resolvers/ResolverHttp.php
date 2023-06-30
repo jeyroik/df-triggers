@@ -60,12 +60,16 @@ class ResolverHttp extends Resolver implements IEventHttp, IOperationHttp
             IResolvedEvent::FIELD__INSTANCE_ID => $this->getInstanceId(),
             IResolvedEvent::FIELD__APPLICATION_ID => $this->getApplicationId()
         ];
-        $params  = $this->buildParams();
+        $params = $this->buildParams();
         $request = $params->hasOne(static::PARAM__REQUEST) ? $params->buildOne(static::PARAM__REQUEST)->getValue() : [];
         $headers = $params->hasOne(static::PARAM__HEADERS) ? $params->buildOne(static::PARAM__HEADERS)->getValue() : [];
         $json    = $params->hasOne(static::PARAM__JSON) ? $params->buildOne(static::PARAM__JSON)->getValue() : [];
 
-        $data = array_merge($data, $this->getHttpRequest($request), $this->getHttpHeaders($headers), $this->getHttpJson($json));
+        $data[IResolvedEvent::FIELD__PARAMS] = array_merge(
+            $this->getHttpRequest($request)->getAll(), 
+            $this->getHttpHeaders($headers)->getAll(), 
+            $this->getHttpJson($json)->getAll()
+        );
 
         return new ResolvedEvent($data);
     }

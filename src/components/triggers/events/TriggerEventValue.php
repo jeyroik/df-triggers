@@ -17,7 +17,7 @@ class TriggerEventValue extends Item implements ITriggerEventValue
 
     public function setCondition(array $condition): static
     {
-        $this->config[static::FIELD__CONDITION] = $condition;
+        $this[static::FIELD__CONDITION] = $condition;
 
         return $this;
     }

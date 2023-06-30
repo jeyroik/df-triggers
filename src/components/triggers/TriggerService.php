@@ -28,13 +28,7 @@ class TriggerService extends Item implements ITriggerService
             Trigger::FIELD__STATE => ETriggerState::OnConstruct->value,
             Trigger::FIELD__VENDOR => [
                 IVendor::FIELD__NAME => $vendorName
-            ],
-            Trigger::FIELD__EVENT => [],
-            Trigger::FIELD__OPERATION => [],
-            Trigger::FIELD__OPERATION_APPLICATION_ID => '',
-            Trigger::FIELD__OPERATION_APPLICATION_VERSION => '',
-            Trigger::FIELD__OPERATION_INSTANCE_ID => '',
-            Trigger::FIELD__OPERATION_INSTANCE_VERSION => ''
+            ]
         ]);
 
         return $this->triggers()->create($trigger);
@@ -53,10 +47,11 @@ class TriggerService extends Item implements ITriggerService
     public function isApplicableTrigger(IResolvedEvent $event, ITrigger $trigger): bool
     {
         $triggerEvent = $trigger->buildEvent();
+        $resolvedEventParams = $event->getParamsValues();
         
         foreach ($triggerEvent->eachParamValue() as $name => $triggerEventValue) {
 
-            $incomeEventValue = $event[$name] ?? null;
+            $incomeEventValue = $resolvedEventParams[$name] ?? null;
 
             if (!$triggerEventValue->met($incomeEventValue)) {
                 return false;

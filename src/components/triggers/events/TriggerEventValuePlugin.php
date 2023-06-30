@@ -24,7 +24,7 @@ class TriggerEventValuePlugin extends Item implements ITriggerEventValuePlugin
 
     public function setApplicationName(string $name): static
     {
-        $this->config[static::FIELD__APPLICATION_NAME] = $name;
+        $this[static::FIELD__APPLICATION_NAME] = $name;
 
         return $this;
     }

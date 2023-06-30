@@ -1,12 +1,24 @@
 <?php
 
+use deflou\components\extensions\instances\ExtensionInstanceResolver;
 use deflou\components\triggers\events\conditions\plugins\ConditionBasic;
 use deflou\components\triggers\operations\plugins\PluginEvent;
 use deflou\components\triggers\operations\plugins\PluginNow;
+use deflou\interfaces\extensions\instances\IExtensionInstanceResolver;
+use deflou\interfaces\instances\IInstance;
 use deflou\interfaces\triggers\events\conditions\IConditionPlugin;
 use deflou\interfaces\triggers\operations\ITriggerOperationPlugin;
+use extas\interfaces\extensions\IExtension;
 
 return [
+    "extensions" => [
+        [
+            IExtension::FIELD__CLASS => ExtensionInstanceResolver::class,
+            IExtension::FIELD__INTERFACE => IExtensionInstanceResolver::class,
+            IExtension::FIELD__SUBJECT => IInstance::SUBJECT,
+            IExtension::FIELD__METHODS => ['buildResolver']
+        ]
+    ],
     "trigger_event_condition_plugins" => [
         [
             IConditionPlugin::FIELD__NAME => 'basic_conditions',

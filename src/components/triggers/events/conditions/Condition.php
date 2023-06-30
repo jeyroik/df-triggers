@@ -18,14 +18,14 @@ class Condition extends Item implements ICondition
 
     public function setPlugin(string $plugin): static
     {
-        $this->config[static::FIELD__PLUGIN] = $plugin;
+        $this[static::FIELD__PLUGIN] = $plugin;
 
         return $this;
     }
 
     public function setCondition(string $condition): static
     {
-        $this->config[static::FIELD__CONDITION] = $condition;
+        $this[static::FIELD__CONDITION] = $condition;
 
         return $this;
     }

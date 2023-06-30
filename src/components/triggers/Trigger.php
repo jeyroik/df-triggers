@@ -40,7 +40,7 @@ class Trigger extends Item implements ITrigger
 
     public function setEvent(array $event): static
     {
-        $this->config[static::FIELD__EVENT] = $event;
+        $this[static::FIELD__EVENT] = $event;
 
         return $this;
     }
@@ -57,7 +57,7 @@ class Trigger extends Item implements ITrigger
 
     public function setOperation(array $operation): static
     {
-        $this->config[static::FIELD__OPERATION] = $operation;
+        $this[static::FIELD__OPERATION] = $operation;
 
         return $this;
     }
@@ -69,7 +69,7 @@ class Trigger extends Item implements ITrigger
 
     public function setApplicationId(ETrigger $et, string $id): static
     {
-        $this->config[$et->getAppIdField()] = $id;
+        $this[$et->getAppIdField()] = $id;
 
         return $this;
     }
@@ -88,7 +88,7 @@ class Trigger extends Item implements ITrigger
 
     public function setApplicationVersion(ETrigger $et, string $version): static
     {
-        $this->config[$et->getAppVerField()] = $version;
+        $this[$et->getAppVerField()] = $version;
 
         return $this;
     }
@@ -100,7 +100,7 @@ class Trigger extends Item implements ITrigger
 
     public function setInstanceId(ETrigger $et, string $id): static
     {
-        $this->config[$et->getInstIdField()] = $id;
+        $this[$et->getInstIdField()] = $id;
 
         return $this;
     }
@@ -119,7 +119,7 @@ class Trigger extends Item implements ITrigger
 
     public function setInstanceVersion(ETrigger $et, string $version): static
     {
-        $this->config[$et->getInstVerField()] = $version;
+        $this[$et->getInstVerField()] = $version;
 
         return $this;
     }

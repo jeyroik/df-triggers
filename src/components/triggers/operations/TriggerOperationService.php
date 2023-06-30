@@ -44,7 +44,7 @@ class TriggerOperationService extends Item implements ITriggerOperationService
             $triggerValue = $plugin($triggerValue, $event);
         }
 
-        $value->setValue($value);
+        $value->setValue($triggerValue);
 
         return $this;
     }
