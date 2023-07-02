@@ -9,6 +9,7 @@ use deflou\components\resolvers\operations\results\EResultStatus;
 use deflou\components\resolvers\ResolverHttp;
 use deflou\components\triggers\ETrigger;
 use deflou\components\triggers\ETriggerState;
+use deflou\components\triggers\THasTrigger;
 use deflou\components\triggers\TriggerService;
 use deflou\interfaces\applications\IApplication;
 use deflou\interfaces\applications\vendors\IVendor;
@@ -20,9 +21,11 @@ use deflou\interfaces\resolvers\operations\results\IOperationResultData;
 use deflou\interfaces\triggers\events\conditions\ICondition;
 use deflou\interfaces\triggers\events\ITriggerEvent;
 use deflou\interfaces\triggers\events\ITriggerEventValue;
+use deflou\interfaces\triggers\IHaveTrigger;
 use deflou\interfaces\triggers\ITrigger;
 use deflou\interfaces\triggers\operations\ITriggerOperation;
 use deflou\interfaces\triggers\operations\ITriggerOperationValue;
+use extas\components\Item;
 use extas\interfaces\parameters\IParam;
 use extas\interfaces\parameters\IParametred;
 use tests\ExtasTestCase;
@@ -208,6 +211,19 @@ class TriggerTest extends ExtasTestCase
         $trigger1->toConstruct();
         $trigger1 = $triggerService->triggers()->one([ITrigger::FIELD__ID => $trigger1->getId()]);
         $this->assertEquals(ETriggerState::OnConstruct->value, $trigger1->getState());
+
+        $tmp = new class extends Item implements IHaveTrigger {
+            use THasTrigger;
+            protected function getSubjectForExtension(): string
+            {
+                return '';
+            }
+        };
+
+        $tmp->setTriggerId($trigger1->getId());
+        $triggerX = $tmp->getTrigger();
+        $this->assertInstanceOf(ITrigger::class, $triggerX);
+        $this->assertEquals($triggerX->getId(), $trigger1->getId());
     }
 
     protected function getAppJsonDecoded(): array
