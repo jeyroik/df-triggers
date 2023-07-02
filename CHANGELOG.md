@@ -1,3 +1,7 @@
+# 0.3.0
+
+- Added `IHaveTrigger`.
+
 # 0.2.0
 
 - Added `IExtensionTrigger`, this extension provides methods for `ITrigger`:
