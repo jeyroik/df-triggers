@@ -1,12 +1,15 @@
 <?php
 
 use deflou\components\extensions\instances\ExtensionInstanceResolver;
+use deflou\components\extensions\triggers\ExtensionTrigger;
 use deflou\components\triggers\events\conditions\plugins\ConditionBasic;
 use deflou\components\triggers\operations\plugins\PluginEvent;
 use deflou\components\triggers\operations\plugins\PluginNow;
 use deflou\interfaces\extensions\instances\IExtensionInstanceResolver;
+use deflou\interfaces\extensions\triggers\IExtensionTrigger;
 use deflou\interfaces\instances\IInstance;
 use deflou\interfaces\triggers\events\conditions\IConditionPlugin;
+use deflou\interfaces\triggers\ITrigger;
 use deflou\interfaces\triggers\operations\ITriggerOperationPlugin;
 use extas\interfaces\extensions\IExtension;
 
@@ -17,6 +20,12 @@ return [
             IExtension::FIELD__INTERFACE => IExtensionInstanceResolver::class,
             IExtension::FIELD__SUBJECT => IInstance::SUBJECT,
             IExtension::FIELD__METHODS => ['buildResolver']
+        ],
+        [
+            IExtension::FIELD__CLASS => ExtensionTrigger::class,
+            IExtension::FIELD__INTERFACE => IExtensionTrigger::class,
+            IExtension::FIELD__SUBJECT => ITrigger::SUBJECT,
+            IExtension::FIELD__METHODS => ['toConstruct', 'activate', 'suspend', 'delete', 'resume']
         ]
     ],
     "trigger_event_condition_plugins" => [

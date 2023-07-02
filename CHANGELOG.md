@@ -1,3 +1,12 @@
+# 0.2.0
+
+- Added `IExtensionTrigger`, this extension provides methods for `ITrigger`:
+  - `toConstruct()`
+  - `activate()`
+  - `suspend()`
+  - `delete()`
+  - `resume()`
+
 # 0.1.1
 
 - Added this changelog.

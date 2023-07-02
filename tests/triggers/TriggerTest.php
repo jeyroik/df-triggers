@@ -5,6 +5,7 @@ use deflou\components\applications\AppWriter;
 use deflou\components\applications\EStates;
 use deflou\components\instances\InstanceService;
 use deflou\components\resolvers\operations\ResolvedOperationHttp;
+use deflou\components\resolvers\operations\results\EResultStatus;
 use deflou\components\resolvers\ResolverHttp;
 use deflou\components\triggers\ETrigger;
 use deflou\components\triggers\ETriggerState;
@@ -15,6 +16,7 @@ use deflou\interfaces\extensions\instances\IExtensionInstanceResolver;
 use deflou\interfaces\instances\IInstance;
 use deflou\interfaces\resolvers\events\IResolvedEvent;
 use deflou\interfaces\resolvers\IResolver;
+use deflou\interfaces\resolvers\operations\results\IOperationResultData;
 use deflou\interfaces\triggers\events\conditions\ICondition;
 use deflou\interfaces\triggers\events\ITriggerEvent;
 use deflou\interfaces\triggers\events\ITriggerEventValue;
@@ -109,13 +111,12 @@ class TriggerTest extends ExtasTestCase
         ];
         $trigger1->setOperation($opData);
         $this->assertEquals($opData, $trigger1->getOperation());
-        ETriggerState::Active->activate($trigger1);
         
         $trigger1->setApplicationId(ETrigger::Operation, $app->getId());
         $trigger1->setInstanceId(ETrigger::Operation, $instance->getId());
         $trigger1->setApplicationVersion(ETrigger::Operation, $app->getVersion());
         $trigger1->setInstanceVersion(ETrigger::Operation, $instance->getVersion());
-        $triggerService->triggers()->update($trigger1);
+        $trigger1->activate();
 
         $trigger2 = $triggerService->createTriggerForInstance($instance, 'vendor0');
         $trigger2->setEvent([
@@ -133,12 +134,10 @@ class TriggerTest extends ExtasTestCase
                 ]
             ]
         ]);
-        ETriggerState::Active->activate($trigger2);
-        $triggerService->triggers()->update($trigger2);
+        $trigger2->activate();
 
         $trigger3 = $triggerService->createTriggerForInstance($instance, 'vendor2');
-        ETriggerState::Active->activate($trigger3);
-        $triggerService->triggers()->update($trigger3);
+        $trigger3->activate();
 
         $triggers = $triggerService->getActiveTriggers($instance->getId(), 'test_event', ['vendor0']);
         $this->assertCount(2, $triggers);
@@ -180,10 +179,35 @@ class TriggerTest extends ExtasTestCase
 
                 $result = $resolvedOp->run();
                 $this->assertFalse($result->isSuccess());
+                $this->assertTrue($result->isFailed());
+
+                $data = $result->buildData();
+                $this->assertInstanceOf(IOperationResultData::class, $data);
+
+                $status = $result->buildStatus();
+                $this->assertInstanceOf(EResultStatus::class, $status);
+
+                $this->assertNotEmpty($result->getMessage());
             }
         }
 
         $this->assertEquals(1, $applicableCount);
+
+        $trigger1->suspend();
+        $trigger1 = $triggerService->triggers()->one([ITrigger::FIELD__ID => $trigger1->getId()]);
+        $this->assertEquals(ETriggerState::Suspended->value, $trigger1->getState());
+
+        $trigger1->delete();
+        $trigger1 = $triggerService->triggers()->one([ITrigger::FIELD__ID => $trigger1->getId()]);
+        $this->assertEquals(ETriggerState::Deleted->value, $trigger1->getState());
+
+        $trigger1->resume();
+        $trigger1 = $triggerService->triggers()->one([ITrigger::FIELD__ID => $trigger1->getId()]);
+        $this->assertEquals(ETriggerState::Active->value, $trigger1->getState());
+
+        $trigger1->toConstruct();
+        $trigger1 = $triggerService->triggers()->one([ITrigger::FIELD__ID => $trigger1->getId()]);
+        $this->assertEquals(ETriggerState::OnConstruct->value, $trigger1->getState());
     }
 
     protected function getAppJsonDecoded(): array
