@@ -251,6 +251,12 @@ class TriggerTest extends ExtasTestCase
         $descriptions = $cService->getDescriptions();
         $this->assertCount(2, $descriptions);
 
+        foreach ($descriptions as $d) {
+            $this->assertEquals('basic_conditions', $d->getPlugin());
+            $d->setPlugin('test');
+            $this->assertEquals('test', $d->getPlugin());
+        }
+
         $valueService = new TriggerEventValueService();
         $valueService->triggerEventValuePlugins()->create(new TriggerEventValuePlugin([
             TriggerEventValuePlugin::FIELD__NAME => 'simple_list',

@@ -1,3 +1,7 @@
+# 0.5.0
+
+- Added `IHavePluygin`.
+
 # 0.4.2
 
 - Added package name.

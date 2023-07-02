@@ -56,6 +56,7 @@ class ConditionBasic extends Item implements IConditionPluginDispatcher
                 ConditionDescription::FIELD__NAME => $c->getName(),
                 ConditionDescription::FIELD__TITLE => $c->getTitle(),
                 ConditionDescription::FIELD__DESCRIPTION => $c->getDescription(),
+                ConditionDescription::FIELD__PLUGIN => $plugin->getName()
             ]);
         }
 
