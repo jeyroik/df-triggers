@@ -1,3 +1,7 @@
+# 0.3.1
+
+- Turned hook `create-after` on.
+
 # 0.3.0
 
 - Added `IHaveTrigger`.

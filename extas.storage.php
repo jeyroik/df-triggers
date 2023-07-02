@@ -14,7 +14,9 @@ return [
             "item_class" => "deflou\\components\\triggers\\Trigger",
             "pk" => "id",
             "aliases" => ["triggers"],
-            "hooks" => [],
+            "hooks" => [
+                'create-after' => true
+            ],
             "code" => [
                 'create-before' => '\\' . RepoItem::class . '::setId($item);'
             ]
