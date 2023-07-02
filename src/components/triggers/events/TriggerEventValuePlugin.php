@@ -16,6 +16,18 @@ class TriggerEventValuePlugin extends Item implements ITriggerEventValuePlugin
     use THasDescription;
     use THasClass;
     use THasParams;
+
+    public function getApplyTo(): array
+    {
+        return $this->config[static::FIELD__APPLY_TO] ?? '';
+    }
+
+    public function setApplyTo(array $applyTo): static
+    {
+        $this[static::FIELD__APPLY_TO] = $applyTo;
+
+        return $this;
+    }
     
     public function getApplicationName(): string
     {

@@ -45,7 +45,7 @@ return [
         ],
         "trigger_event_value_plugins" => [
             "namespace" => "deflou\\repositories",
-            "item_class" => "deflou\\components\\instances\\InstanceInfo",
+            "item_class" => "deflou\\components\\triggers\\events\\TriggerEventValuePlugin",
             "pk" => "id",
             "aliases" => ["triggerEventValuePlugins"],
             "hooks" => [],
@@ -54,13 +54,5 @@ return [
                                   .'\\' . RepoItem::class . '::throwIfExist($this, $item, [\'name\']);'
             ]
         ],
-    ],
-    "extensions" => [
-        [
-            IExtension::FIELD__CLASS => ExtensionInstanceResolver::class,
-            IExtension::FIELD__INTERFACE => IExtensionInstanceResolver::class,
-            IExtension::FIELD__SUBJECT => IInstance::SUBJECT,
-            IExtension::FIELD__METHODS => ['buildResolver']
-        ]
     ]
 ];

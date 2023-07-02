@@ -39,6 +39,21 @@ class ConditionService extends Item implements IConditionService
         return $plugin($value->getValue(), $condition->getCondition(), $incomeEventValue);
     }
 
+    /**
+     * @return IConditionDescription[]
+     */
+    public function getDescriptions(): array
+    {
+        $conditionPlugins = $this->triggerEventConditionPlugins()->all([]);
+        $descriptions = [];
+
+        foreach ($conditionPlugins as $p) {
+            $descriptions = array_merge($descriptions, $p->getConditionDescriptions());
+        }
+
+        return $descriptions;
+    }
+
     protected function getSubjectForExtension(): string
     {
         return static::SUBJECT;

@@ -9,6 +9,11 @@ use deflou\components\resolvers\operations\results\EResultStatus;
 use deflou\components\resolvers\ResolverHttp;
 use deflou\components\triggers\ETrigger;
 use deflou\components\triggers\ETriggerState;
+use deflou\components\triggers\events\conditions\ConditionService;
+use deflou\components\triggers\events\conditions\plugins\ConditionBasic;
+use deflou\components\triggers\events\plugins\ValuePluginList;
+use deflou\components\triggers\events\TriggerEventValuePlugin;
+use deflou\components\triggers\events\TriggerEventValueService;
 use deflou\components\triggers\THasTrigger;
 use deflou\components\triggers\TriggerService;
 use deflou\interfaces\applications\IApplication;
@@ -19,13 +24,17 @@ use deflou\interfaces\resolvers\events\IResolvedEvent;
 use deflou\interfaces\resolvers\IResolver;
 use deflou\interfaces\resolvers\operations\results\IOperationResultData;
 use deflou\interfaces\triggers\events\conditions\ICondition;
+use deflou\interfaces\triggers\events\conditions\IConditionPlugin;
 use deflou\interfaces\triggers\events\ITriggerEvent;
 use deflou\interfaces\triggers\events\ITriggerEventValue;
+use deflou\interfaces\triggers\events\ITriggerEventValueService;
+use deflou\interfaces\triggers\events\plugins\IValueDescription;
 use deflou\interfaces\triggers\IHaveTrigger;
 use deflou\interfaces\triggers\ITrigger;
 use deflou\interfaces\triggers\operations\ITriggerOperation;
 use deflou\interfaces\triggers\operations\ITriggerOperationValue;
 use extas\components\Item;
+use extas\components\parameters\Param;
 use extas\interfaces\parameters\IParam;
 use extas\interfaces\parameters\IParametred;
 use tests\ExtasTestCase;
@@ -224,6 +233,50 @@ class TriggerTest extends ExtasTestCase
         $triggerX = $tmp->getTrigger();
         $this->assertInstanceOf(ITrigger::class, $triggerX);
         $this->assertEquals($triggerX->getId(), $trigger1->getId());
+
+        $cService = new ConditionService();
+        $descriptions = $cService->getDescriptions();
+        $this->assertGreaterThan(5, $descriptions);
+
+        /**
+         * @var IConditionPlugin $cPlugin
+         */
+        $cPlugin = $cService->triggerEventConditionPlugins()->one([IConditionPlugin::FIELD__NAME => 'basic_conditions']);
+        $cPlugin->addParam(new Param([
+            Param::FIELD__NAME => ConditionBasic::PARAM__ITEMS,
+            Param::FIELD__VALUE => ['eq', '!eq']
+        ]));
+        $cService->triggerEventConditionPlugins()->update($cPlugin);
+
+        $descriptions = $cService->getDescriptions();
+        $this->assertCount(2, $descriptions);
+
+        $valueService = new TriggerEventValueService();
+        $valueService->triggerEventValuePlugins()->create(new TriggerEventValuePlugin([
+            TriggerEventValuePlugin::FIELD__NAME => 'simple_list',
+            TriggerEventValuePlugin::FIELD__APPLICATION_NAME => ITriggerEventValueService::ANY,
+            TriggerEventValuePlugin::FIELD__CLASS => ValuePluginList::class,
+            TriggerEventValuePlugin::FIELD__APPLY_TO => [ITriggerEventValueService::ANY],
+            TriggerEventValuePlugin::FIELD__PARAMS => [
+                ValuePluginList::PARAM__LIST => [
+                    IParam::FIELD__NAME => ValuePluginList::PARAM__LIST,
+                    IParam::FIELD__VALUE => [
+                        [
+                            IValueDescription::FIELD__NAME => 'test',
+                            IValueDescription::FIELD__TITLE => 'test',
+                            IValueDescription::FIELD__DESCRIPTION => 'test'
+                        ]
+                    ]
+                ]
+            ]
+        ]));
+
+        $values = $valueService->getValues($instance, 'test');
+        $this->assertCount(1, $values);
+
+        $value = array_shift($values);
+
+        $this->assertInstanceOf(IValueDescription::class, $value);
     }
 
     protected function getAppJsonDecoded(): array

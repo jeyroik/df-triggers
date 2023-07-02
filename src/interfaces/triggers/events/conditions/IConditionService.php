@@ -11,4 +11,8 @@ interface IConditionService extends IItem
     public function buildCondition(ITriggerEventValue $value): ICondition;
     public function buildPlugin(ICondition $condition): ?IConditionPlugin;
     public function met(ITriggerEventValue $value, string|int $incomeEventValue): bool;
+    /**
+     * @return IConditionDescription[]
+     */
+    public function getDescriptions(): array;
 }
