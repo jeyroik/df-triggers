@@ -14,6 +14,7 @@ use deflou\interfaces\triggers\operations\ITriggerOperationPlugin;
 use extas\interfaces\extensions\IExtension;
 
 return [
+    "name" => "jeyroik/df-triggers",
     "extensions" => [
         [
             IExtension::FIELD__CLASS => ExtensionInstanceResolver::class,
