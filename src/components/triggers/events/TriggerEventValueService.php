@@ -12,19 +12,20 @@ use extas\interfaces\repositories\IRepository;
  */
 class TriggerEventValueService extends Item implements ITriggerEventValueService
 {
-    public function getValues(IInstance $instance): array
+    public function getValues(IInstance $instance, string $paramName = self::ANY): array
     {
         /**
          * @var ITriggerEventValuePlugin[] $plugins
          */
         $plugins = $this->triggerEventValuePlugins()->all([
-            ITriggerEventValuePlugin::FIELD__APPLICATION_NAME => [$instance->getApplication()->getName(), static::APPLICATION__ANY]
+            ITriggerEventValuePlugin::FIELD__APPLICATION_NAME => [$instance->getApplication()->getName(), static::ANY],
+            ITriggerEventValuePlugin::FIELD__APPLY_TO => [$paramName, static::ANY]
         ]);
         $result = [];
 
         foreach ($plugins as $plugin) {
             $dispatcher = $plugin->buildClassWithParameters();
-            $result = array_merge($result, $dispatcher($instance));
+            $result = array_merge($result, $dispatcher($instance, $paramName, $plugin));
         }
 
         return $result;

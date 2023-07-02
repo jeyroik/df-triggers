@@ -1,3 +1,9 @@
+# 0.4.0
+
+- Added `IValueDescription`.
+- Added simple value plugin.
+- Updated tests.
+
 # 0.3.1
 
 - Turned hook `create-after` on.

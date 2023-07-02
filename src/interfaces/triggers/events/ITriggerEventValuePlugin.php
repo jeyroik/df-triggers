@@ -12,9 +12,12 @@ interface ITriggerEventValuePlugin extends IItem, IHaveUUID, IHasName, IHasDescr
 {
     public const SUBJECT = 'deflou.trigger.event.value.plugin';
 
-    public const FIELD__PARAM_NAMES = 'param_names';
+    public const FIELD__APPLY_TO = 'apply_to';
     public const FIELD__APPLICATION_NAME = 'app_name';
 
     public function getApplicationName(): string;
     public function setApplicationName(string $name): static;
+
+    public function getApplyTo(): array;
+    public function setApplyTo(array $applyTo): static;
 }
