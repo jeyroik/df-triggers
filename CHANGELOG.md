@@ -1,3 +1,7 @@
+# 0.4.2
+
+- Added package name.
+
 # 0.4.1
 
 - Added repos aliases.
