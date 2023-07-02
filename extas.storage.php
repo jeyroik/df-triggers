@@ -1,10 +1,6 @@
 <?php
 
-use deflou\components\extensions\instanes\ExtensionInstanceResolver;
-use deflou\interfaces\extensions\instances\IExtensionInstanceResolver;
-use deflou\interfaces\instances\IInstance;
 use extas\components\repositories\RepoItem;
-use extas\interfaces\extensions\IExtension;
 
 return [
     "name" => "jeyroik/df-triggers",
@@ -25,7 +21,7 @@ return [
             "namespace" => "deflou\\repositories",
             "item_class" => "deflou\\components\\triggers\\events\\conditions\\ConditionPlugin",
             "pk" => "id",
-            "aliases" => ["triggerEventConditionPlugins"],
+            "aliases" => ["triggerEventConditionPlugins", "trigger_event_condition_plugins"],
             "hooks" => [],
             "code" => [
                 'create-before' => '\\' . RepoItem::class . '::setId($item);'
@@ -36,7 +32,7 @@ return [
             "namespace" => "deflou\\repositories",
             "item_class" => "deflou\\components\\triggers\\operations\\TriggerOperationPlugin",
             "pk" => "id",
-            "aliases" => ["triggerOperationPlugins"],
+            "aliases" => ["triggerOperationPlugins", "trigger_operation_plugins"],
             "hooks" => [],
             "code" => [
                 'create-before' => '\\' . RepoItem::class . '::setId($item);'
@@ -47,7 +43,7 @@ return [
             "namespace" => "deflou\\repositories",
             "item_class" => "deflou\\components\\triggers\\events\\TriggerEventValuePlugin",
             "pk" => "id",
-            "aliases" => ["triggerEventValuePlugins"],
+            "aliases" => ["triggerEventValuePlugins", "trigger_event_value_plugins"],
             "hooks" => [],
             "code" => [
                 'create-before' => '\\' . RepoItem::class . '::setId($item);'
