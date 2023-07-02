@@ -19,12 +19,12 @@ class OperationResult extends Item implements IOperationResult
 
     public function isSuccess(): bool
     {
-        return $this->getStatus() === EResultStatus::Sucess;
+        return $this->getStatus() === EResultStatus::Sucess->value;
     }
 
     public function isFailed(): bool
     {
-        return $this->getStatus() === EResultStatus::Failed;
+        return $this->getStatus() === EResultStatus::Failed->value;
     }
 
     public function getMessage(): string
