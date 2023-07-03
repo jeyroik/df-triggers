@@ -211,11 +211,12 @@ class TriggerTest extends ExtasTestCase
 
         $trigger1->delete();
         $trigger1 = $triggerService->triggers()->one([ITrigger::FIELD__ID => $trigger1->getId()]);
-        $this->assertEquals(ETriggerState::Deleted->value, $trigger1->getState());
+        $this->assertTrue($trigger1->stateIs(ETriggerState::Deleted));
 
         $trigger1->resume();
         $trigger1 = $triggerService->triggers()->one([ITrigger::FIELD__ID => $trigger1->getId()]);
-        $this->assertEquals(ETriggerState::Active->value, $trigger1->getState());
+        $this->assertTrue($trigger1->stateIsNot(ETriggerState::Deleted));
+        $this->assertTrue($trigger1->stateIs(ETriggerState::Active));
 
         $trigger1->toConstruct();
         $trigger1 = $triggerService->triggers()->one([ITrigger::FIELD__ID => $trigger1->getId()]);
@@ -283,6 +284,30 @@ class TriggerTest extends ExtasTestCase
         $value = array_shift($values);
 
         $this->assertInstanceOf(IValueDescription::class, $value);
+
+        $externalData = [
+            ITriggerEvent::FIELD__NAME => 'test_event',
+            ITriggerEvent::FIELD__PARAMS => [
+                'some' => [
+                    IParam::FIELD__VALUE => [
+                        ITriggerEventValue::FIELD__CONDITION => [
+                            ICondition::FIELD__PLUGIN => 'basic_conditions',
+                            ICondition::FIELD__CONDITION => 'eq'
+                        ],
+                        ITriggerEventValue::FIELD__VALUE => 'ok'
+                    ]
+                ]
+            ]
+        ];
+
+        $trigger = $triggerService->insertEvent($trigger1->getId(), $externalData);
+        $event = $trigger->buildEvent();
+        $this->assertEquals('Test event', $event->getTitle());
+        $this->assertEquals('This is test event', $event->getDescription());
+
+        $param = $event->buildParams()->buildOne('some');
+        $this->assertEquals('Some', $param->getTitle());
+        $this->assertEquals('Some param', $param->getDescription());
     }
 
     protected function getAppJsonDecoded(): array

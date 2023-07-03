@@ -26,7 +26,7 @@ return [
             IExtension::FIELD__CLASS => ExtensionTrigger::class,
             IExtension::FIELD__INTERFACE => IExtensionTrigger::class,
             IExtension::FIELD__SUBJECT => ITrigger::SUBJECT,
-            IExtension::FIELD__METHODS => ['toConstruct', 'activate', 'suspend', 'delete', 'resume']
+            IExtension::FIELD__METHODS => ['toConstruct', 'activate', 'suspend', 'delete', 'resume', 'stateIs', 'stateIsNot']
         ]
     ],
     "trigger_event_condition_plugins" => [

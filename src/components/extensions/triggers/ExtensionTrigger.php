@@ -42,6 +42,16 @@ class ExtensionTrigger extends Extension implements IExtensionTrigger
         return $this->activate($trigger);
     }
 
+    public function stateIs(ETriggerState $state, ITrigger &$trigger = null): bool
+    {
+        return $trigger->getState() == $state->value;
+    }
+
+    public function stateIsNot(ETriggerState $state, ITrigger &$trigger = null): bool
+    {
+        return !$this->stateIs($state, $trigger);
+    }
+
     protected function updateTrigger(ITrigger $trigger): bool
     {
         $service = new TriggerService();
