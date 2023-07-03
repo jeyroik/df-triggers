@@ -27,4 +27,13 @@ interface ITriggerService extends IItem
      * @return ITrigger|IExtensionTrigger
      */
     public function createTriggerForInstance(IInstance $instance, string $vendorName): ITrigger;
+
+    /**
+     * Insert event data into trigger.
+     *
+     * @param  string   $triggerId
+     * @param  array    $eventData [name => '...', 'params' => ['<par1.name>' => ['<par1.value>']]]
+     * @return ITrigger with inserted and detailed event
+     */
+    public function insertEvent(string $triggerId, array $eventData): ITrigger;
 }

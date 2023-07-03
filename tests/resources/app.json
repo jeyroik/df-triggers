@@ -35,8 +35,14 @@
     "events": {
         "test_event": {
             "name": "test_event",
+            "title": "Test event",
+            "description": "This is test event",
             "params": {
-
+                "some": {
+                    "name": "some",
+                    "title": "Some",
+                    "description": "Some param"
+                }
             }
         }
     },

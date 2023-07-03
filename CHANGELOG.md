@@ -1,3 +1,10 @@
+# 0.6.0
+
+- Added methods to `IExtensionTrigger`:
+  - `stateIs(ETriggerState $state): bool`
+  - `stateIsNot(ETriggerState $state): bool`
+- Added method `insertEvent(string $triggerId, array $eventData)` to `ITriggerService`.
+
 # 0.5.0
 
 - Added `IHavePluygin`.
