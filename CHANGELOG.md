@@ -1,3 +1,7 @@
+# 0.7.1
+
+- Added personal for trigger operation plugin stage.
+
 # 0.7.0
 
 - Added method `ITriggerOperationService::getPluginsTemplates(IInstance $eventInstance, ITrigger $trigger, string $context): array`.
