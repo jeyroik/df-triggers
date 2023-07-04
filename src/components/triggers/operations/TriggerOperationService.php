@@ -73,6 +73,12 @@ class TriggerOperationService extends Item implements ITriggerOperationService
                  */
                 $plugin($data, $opPlugin, $template);
             }
+            foreach ($this->getPluginsByStage(IStageTriggerOpTemplate::NAME . $context . '.' . $opPlugin->getName()) as $plugin) {
+                /**
+                 * @var IStageTriggerOpTemplate $plugin
+                 */
+                $plugin($data, $opPlugin, $template);
+            }
             $result[$opPlugin->getName()] = $template;
         }
 

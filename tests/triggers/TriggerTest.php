@@ -25,6 +25,7 @@ use deflou\interfaces\instances\IInstance;
 use deflou\interfaces\resolvers\events\IResolvedEvent;
 use deflou\interfaces\resolvers\IResolver;
 use deflou\interfaces\resolvers\operations\results\IOperationResultData;
+use deflou\interfaces\stages\triggers\IStageTriggerOpTemplate;
 use deflou\interfaces\triggers\events\conditions\ICondition;
 use deflou\interfaces\triggers\events\conditions\IConditionPlugin;
 use deflou\interfaces\triggers\events\ITriggerEvent;
@@ -37,6 +38,7 @@ use deflou\interfaces\triggers\operations\ITriggerOperation;
 use deflou\interfaces\triggers\operations\ITriggerOperationValue;
 use extas\components\Item;
 use extas\components\parameters\Param;
+use extas\components\plugins\Plugin;
 use extas\interfaces\parameters\IParam;
 use extas\interfaces\parameters\IParametred;
 use tests\ExtasTestCase;
@@ -312,9 +314,13 @@ class TriggerTest extends ExtasTestCase
         $this->assertEquals('Some param', $param->getDescription());
 
         $opService = new TriggerOperationService();
+        $opService->plugins()->create(new Plugin([
+            Plugin::FIELD__CLASS => PluginTriggerOpTemplateArray::class,
+            Plugin::FIELD__STAGE => IStageTriggerOpTemplate::NAME . PluginTriggerOpTemplateArray::CONTEXT__ARRAY . '.event'
+        ]));
         $templates = $opService->getPluginsTemplates($trigger->getInstance(ETrigger::Operation), $trigger, PluginTriggerOpTemplateArray::CONTEXT__ARRAY);
         $this->assertCount(2, $templates);
-        foreach ($templates as $name => $template) {
+        foreach ($templates as $template) {
             $this->assertIsArray($template);
             $this->assertArrayHasKey('plugin', $template);
             $this->assertArrayHasKey('name', $template['plugin']);
@@ -322,17 +328,17 @@ class TriggerTest extends ExtasTestCase
             $this->assertArrayHasKey('description', $template['plugin']);
 
             $this->assertArrayHasKey('items', $template);
-            $this->assertIsMissObjects($template['items']);
+            $this->assertIsMissedObjects($template['items']);
         }
     }
 
-    protected function assertIsMissObjects(array $item, string $message = ''): bool
+    protected function assertIsMissedObjects(array $item, string $message = ''): bool
     {
         foreach ($item as $value) {
             if (is_object($value)) {
                 throw new \Exception($message ?: 'Found object in an array: ' . print_r($item, true));
             } elseif (is_array($value)) {
-                $this->assertIsMissObjects($value);
+                $this->assertIsMissedObjects($value);
             }
         }
 
