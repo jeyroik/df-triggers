@@ -1,6 +1,7 @@
 <?php
 namespace deflou\components\triggers\events;
 
+use deflou\components\applications\THasApplicationName;
 use deflou\interfaces\triggers\events\ITriggerEventValuePlugin;
 use extas\components\Item;
 use extas\components\parameters\THasParams;
@@ -16,6 +17,7 @@ class TriggerEventValuePlugin extends Item implements ITriggerEventValuePlugin
     use THasDescription;
     use THasClass;
     use THasParams;
+    use THasApplicationName;
 
     public function getApplyTo(): array
     {
@@ -25,18 +27,6 @@ class TriggerEventValuePlugin extends Item implements ITriggerEventValuePlugin
     public function setApplyTo(array $applyTo): static
     {
         $this[static::FIELD__APPLY_TO] = $applyTo;
-
-        return $this;
-    }
-    
-    public function getApplicationName(): string
-    {
-        return $this->config[static::FIELD__APPLICATION_NAME] ?? '';
-    }
-
-    public function setApplicationName(string $name): static
-    {
-        $this[static::FIELD__APPLICATION_NAME] = $name;
 
         return $this;
     }

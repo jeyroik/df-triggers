@@ -21,7 +21,7 @@ return [
             "namespace" => "deflou\\repositories",
             "item_class" => "deflou\\components\\triggers\\events\\conditions\\ConditionPlugin",
             "pk" => "id",
-            "aliases" => ["triggerEventConditionPlugins", "trigger_event_condition_plugins"],
+            "aliases" => ["triggerEventConditionPlugins"],
             "hooks" => [],
             "code" => [
                 'create-before' => '\\' . RepoItem::class . '::setId($item);'
@@ -32,7 +32,7 @@ return [
             "namespace" => "deflou\\repositories",
             "item_class" => "deflou\\components\\triggers\\operations\\TriggerOperationPlugin",
             "pk" => "id",
-            "aliases" => ["triggerOperationPlugins", "trigger_operation_plugins"],
+            "aliases" => ["triggerOperationPlugins"],
             "hooks" => [],
             "code" => [
                 'create-before' => '\\' . RepoItem::class . '::setId($item);'
@@ -43,7 +43,7 @@ return [
             "namespace" => "deflou\\repositories",
             "item_class" => "deflou\\components\\triggers\\events\\TriggerEventValuePlugin",
             "pk" => "id",
-            "aliases" => ["triggerEventValuePlugins", "trigger_event_value_plugins"],
+            "aliases" => ["triggerEventValuePlugins"],
             "hooks" => [],
             "code" => [
                 'create-before' => '\\' . RepoItem::class . '::setId($item);'

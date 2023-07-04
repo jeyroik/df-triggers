@@ -1,7 +1,11 @@
 <?php
 namespace deflou\components\triggers\operations;
 
+use deflou\components\triggers\ETrigger;
+use deflou\interfaces\instances\IInstance;
 use deflou\interfaces\resolvers\events\IResolvedEvent;
+use deflou\interfaces\stages\triggers\IStageTriggerOpTemplate;
+use deflou\interfaces\triggers\ITrigger;
 use deflou\interfaces\triggers\operations\ITriggerOperationPlugin;
 use deflou\interfaces\triggers\operations\ITriggerOperationService;
 use deflou\interfaces\triggers\operations\ITriggerOperationValue;
@@ -47,6 +51,32 @@ class TriggerOperationService extends Item implements ITriggerOperationService
         $value->setValue($triggerValue);
 
         return $this;
+    }
+
+    public function getPluginsTemplates(IInstance $eventInstance, ITrigger $trigger, string $context): array
+    {
+        /**
+         * @var ITriggerOperationPlugin[] $plugins
+         */
+        $plugins = $this->triggerOperationPlugins()->all([
+            ITriggerOperationPlugin::FIELD__APPLICATION_NAME => [$trigger->getApplication(ETrigger::Operation)->getName(), static::ANY]
+        ]);
+
+        $result = [];
+
+        foreach ($plugins as $opPlugin) {
+            $data = $opPlugin->getTemplateData($eventInstance, $trigger);
+            $template = null;
+            foreach ($this->getPluginsByStage(IStageTriggerOpTemplate::NAME . $context) as $plugin) {
+                /**
+                 * @var IStageTriggerOpTemplate $plugin
+                 */
+                $plugin($data, $opPlugin, $template);
+            }
+            $result[$opPlugin->getName()] = $template;
+        }
+
+        return $result;
     }
 
     protected function getSubjectForExtension(): string
