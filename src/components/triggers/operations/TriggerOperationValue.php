@@ -6,6 +6,12 @@ use deflou\interfaces\triggers\operations\ITriggerOperationValue;
 use extas\components\Item;
 use extas\components\THasValue;
 
+/**
+ * {
+ *  "plugins": [<plugin1.name>, <plugin2.name>, ...],
+ *  "value": "..."
+ * }
+ */
 class TriggerOperationValue extends Item implements ITriggerOperationValue
 {
     use THasValue;

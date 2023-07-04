@@ -3,13 +3,14 @@ namespace deflou\components\plugins\triggers;
 
 use deflou\interfaces\stages\triggers\IStageTriggerOpTemplate;
 use deflou\interfaces\triggers\operations\ITriggerOperationPlugin;
+use deflou\interfaces\triggers\operations\plugins\templates\ITemplateContext;
 use extas\components\plugins\Plugin;
 
 class PluginTriggerOpTemplateArray extends Plugin implements IStageTriggerOpTemplate
 {
     public const CONTEXT__ARRAY = 'array';
 
-    public function __invoke(array $templateData, ITriggerOperationPlugin $plugin, mixed &$template): void
+    public function __invoke(array $templateData, ITriggerOperationPlugin $plugin, mixed &$template, ITemplateContext $context): void
     {
         $template = [
             'plugin' => [

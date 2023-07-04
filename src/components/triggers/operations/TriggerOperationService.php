@@ -9,6 +9,7 @@ use deflou\interfaces\triggers\ITrigger;
 use deflou\interfaces\triggers\operations\ITriggerOperationPlugin;
 use deflou\interfaces\triggers\operations\ITriggerOperationService;
 use deflou\interfaces\triggers\operations\ITriggerOperationValue;
+use deflou\interfaces\triggers\operations\plugins\templates\ITemplateContext;
 use extas\components\Item;
 use extas\interfaces\repositories\IRepository;
 
@@ -53,7 +54,7 @@ class TriggerOperationService extends Item implements ITriggerOperationService
         return $this;
     }
 
-    public function getPluginsTemplates(IInstance $eventInstance, ITrigger $trigger, string $context): array
+    public function getPluginsTemplates(IInstance $eventInstance, ITrigger $trigger, ITemplateContext $context): array
     {
         /**
          * @var ITriggerOperationPlugin[] $plugins
@@ -71,13 +72,13 @@ class TriggerOperationService extends Item implements ITriggerOperationService
                 /**
                  * @var IStageTriggerOpTemplate $plugin
                  */
-                $plugin($data, $opPlugin, $template);
+                $plugin($data, $opPlugin, $template, $context);
             }
             foreach ($this->getPluginsByStage(IStageTriggerOpTemplate::NAME . $context . '.' . $opPlugin->getName()) as $plugin) {
                 /**
                  * @var IStageTriggerOpTemplate $plugin
                  */
-                $plugin($data, $opPlugin, $template);
+                $plugin($data, $opPlugin, $template, $context);
             }
             $result[$opPlugin->getName()] = $template;
         }
