@@ -15,6 +15,7 @@ use deflou\components\triggers\events\conditions\plugins\ConditionBasic;
 use deflou\components\triggers\events\plugins\ValuePluginList;
 use deflou\components\triggers\events\TriggerEventValuePlugin;
 use deflou\components\triggers\events\TriggerEventValueService;
+use deflou\components\triggers\operations\plugins\templates\TemplateContext;
 use deflou\components\triggers\operations\TriggerOperationService;
 use deflou\components\triggers\THasTrigger;
 use deflou\components\triggers\TriggerService;
@@ -318,7 +319,13 @@ class TriggerTest extends ExtasTestCase
             Plugin::FIELD__CLASS => PluginTriggerOpTemplateArray::class,
             Plugin::FIELD__STAGE => IStageTriggerOpTemplate::NAME . PluginTriggerOpTemplateArray::CONTEXT__ARRAY . '.event'
         ]));
-        $templates = $opService->getPluginsTemplates($trigger->getInstance(ETrigger::Operation), $trigger, PluginTriggerOpTemplateArray::CONTEXT__ARRAY);
+        $templates = $opService->getPluginsTemplates(
+            $trigger->getInstance(ETrigger::Operation), 
+            $trigger, 
+            new TemplateContext([
+                TemplateContext::FIELD__NAME => PluginTriggerOpTemplateArray::CONTEXT__ARRAY
+            ])
+        );
         $this->assertCount(2, $templates);
         foreach ($templates as $template) {
             $this->assertIsArray($template);

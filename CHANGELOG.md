@@ -1,3 +1,7 @@
+# 1.0.0
+
+- Added template context.
+
 # 0.7.1
 
 - Added personal for trigger operation plugin stage.
