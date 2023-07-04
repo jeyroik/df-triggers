@@ -2,19 +2,29 @@
 
 use deflou\components\extensions\instances\ExtensionInstanceResolver;
 use deflou\components\extensions\triggers\ExtensionTrigger;
+use deflou\components\plugins\triggers\PluginTriggerOpTemplateArray;
 use deflou\components\triggers\events\conditions\plugins\ConditionBasic;
 use deflou\components\triggers\operations\plugins\PluginEvent;
 use deflou\components\triggers\operations\plugins\PluginNow;
 use deflou\interfaces\extensions\instances\IExtensionInstanceResolver;
 use deflou\interfaces\extensions\triggers\IExtensionTrigger;
 use deflou\interfaces\instances\IInstance;
+use deflou\interfaces\stages\triggers\IStageTriggerOpTemplate;
 use deflou\interfaces\triggers\events\conditions\IConditionPlugin;
 use deflou\interfaces\triggers\ITrigger;
 use deflou\interfaces\triggers\operations\ITriggerOperationPlugin;
+use deflou\interfaces\triggers\operations\ITriggerOperationService;
 use extas\interfaces\extensions\IExtension;
+use extas\interfaces\plugins\IPlugin;
 
 return [
     "name" => "jeyroik/df-triggers",
+    "plugins" => [
+        [
+            IPlugin::FIELD__CLASS => PluginTriggerOpTemplateArray::class,
+            IPlugin::FIELD__STAGE => IStageTriggerOpTemplate::NAME . PluginTriggerOpTemplateArray::CONTEXT__ARRAY
+        ]
+    ],
     "extensions" => [
         [
             IExtension::FIELD__CLASS => ExtensionInstanceResolver::class,
@@ -42,13 +52,15 @@ return [
             ITriggerOperationPlugin::FIELD__NAME => 'event',
             ITriggerOperationPlugin::FIELD__TITLE => 'Данные из события',
             ITriggerOperationPlugin::FIELD__DESCRIPTION => 'Подставить данные из события',
-            ITriggerOperationPlugin::FIELD__CLASS => PluginEvent::class
+            ITriggerOperationPlugin::FIELD__CLASS => PluginEvent::class,
+            ITriggerOperationPlugin::FIELD__APPLICATION_NAME => ITriggerOperationService::ANY
         ],
         [
             ITriggerOperationPlugin::FIELD__NAME => 'now',
             ITriggerOperationPlugin::FIELD__TITLE => 'Текущие время и дата',
             ITriggerOperationPlugin::FIELD__DESCRIPTION => 'Подставить текущее время и/или дату',
-            ITriggerOperationPlugin::FIELD__CLASS => PluginNow::class
+            ITriggerOperationPlugin::FIELD__CLASS => PluginNow::class,
+            ITriggerOperationPlugin::FIELD__APPLICATION_NAME => ITriggerOperationService::ANY
         ],
     ]
 ];

@@ -4,6 +4,7 @@ use deflou\components\applications\Application;
 use deflou\components\applications\AppWriter;
 use deflou\components\applications\EStates;
 use deflou\components\instances\InstanceService;
+use deflou\components\plugins\triggers\PluginTriggerOpTemplateArray;
 use deflou\components\resolvers\operations\ResolvedOperationHttp;
 use deflou\components\resolvers\operations\results\EResultStatus;
 use deflou\components\resolvers\ResolverHttp;
@@ -14,6 +15,7 @@ use deflou\components\triggers\events\conditions\plugins\ConditionBasic;
 use deflou\components\triggers\events\plugins\ValuePluginList;
 use deflou\components\triggers\events\TriggerEventValuePlugin;
 use deflou\components\triggers\events\TriggerEventValueService;
+use deflou\components\triggers\operations\TriggerOperationService;
 use deflou\components\triggers\THasTrigger;
 use deflou\components\triggers\TriggerService;
 use deflou\interfaces\applications\IApplication;
@@ -308,6 +310,33 @@ class TriggerTest extends ExtasTestCase
         $param = $event->buildParams()->buildOne('some');
         $this->assertEquals('Some', $param->getTitle());
         $this->assertEquals('Some param', $param->getDescription());
+
+        $opService = new TriggerOperationService();
+        $templates = $opService->getPluginsTemplates($trigger->getInstance(ETrigger::Operation), $trigger, PluginTriggerOpTemplateArray::CONTEXT__ARRAY);
+        $this->assertCount(2, $templates);
+        foreach ($templates as $name => $template) {
+            $this->assertIsArray($template);
+            $this->assertArrayHasKey('plugin', $template);
+            $this->assertArrayHasKey('name', $template['plugin']);
+            $this->assertArrayHasKey('title', $template['plugin']);
+            $this->assertArrayHasKey('description', $template['plugin']);
+
+            $this->assertArrayHasKey('items', $template);
+            $this->assertIsMissObjects($template['items']);
+        }
+    }
+
+    protected function assertIsMissObjects(array $item, string $message = ''): bool
+    {
+        foreach ($item as $value) {
+            if (is_object($value)) {
+                throw new \Exception($message ?: 'Found object in an array: ' . print_r($item, true));
+            } elseif (is_array($value)) {
+                $this->assertIsMissObjects($value);
+            }
+        }
+
+        return true;
     }
 
     protected function getAppJsonDecoded(): array

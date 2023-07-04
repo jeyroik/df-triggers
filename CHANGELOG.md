@@ -1,3 +1,10 @@
+# 0.7.0
+
+- Added method `ITriggerOperationService::getPluginsTemplates(IInstance $eventInstance, ITrigger $trigger, string $context): array`.
+- Added stage `IStageTriggerOpTemplate` (warning: use it only with context suffix, see extas.php for example).
+- Added plugin `PluginTriggerOpTemplateArray` for an `array` context of `IStageTriggerOpTemplate`.
+- Reduced code duplication by using `jeyroik/df-applications::IHaveApplicationName`.
+
 # 0.6.0
 
 - Added methods to `IExtensionTrigger`:
