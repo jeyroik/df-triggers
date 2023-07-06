@@ -36,4 +36,6 @@ interface ITriggerService extends IItem
      * @return ITrigger with inserted and detailed event
      */
     public function insertEvent(string $triggerId, array $eventData): ITrigger;
+
+    public function insertOperationInstance(ITrigger &$trigger, IInstance $instance): bool;
 }

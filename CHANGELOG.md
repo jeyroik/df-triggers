@@ -1,3 +1,7 @@
+# 1.1.0
+
+- Added `ITriggerService::insertOperationInstance(ITrigger &$trigger, IInstance $instance): bool`.
+
 # 1.0.0
 
 - Added template context.
