@@ -129,10 +129,9 @@ class TriggerTest extends ExtasTestCase
         $trigger1->setOperation($opData);
         $this->assertEquals($opData, $trigger1->getOperation());
         
-        $trigger1->setApplicationId(ETrigger::Operation, $app->getId());
-        $trigger1->setInstanceId(ETrigger::Operation, $instance->getId());
-        $trigger1->setApplicationVersion(ETrigger::Operation, $app->getVersion());
-        $trigger1->setInstanceVersion(ETrigger::Operation, $instance->getVersion());
+        $inserted = $triggerService->insertOperationInstance($trigger1, $instance);
+        $this->assertTrue($inserted);
+        
         $trigger1->activate();
 
         $trigger2 = $triggerService->createTriggerForInstance($instance, 'vendor0');

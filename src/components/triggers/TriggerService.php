@@ -97,6 +97,18 @@ class TriggerService extends Item implements ITriggerService
         return $trigger;
     }
 
+    public function insertOperationInstance(ITrigger &$trigger, IInstance $instance): bool
+    {
+        $app = $instance->getApplication();
+        $trigger->setInstanceId(ETrigger::Operation, $instance->getId())
+                ->setInstanceVersion(ETrigger::Operation, $instance->getVersion())
+                ->setApplicationId(ETrigger::Operation, $app->getId())
+                ->setApplicationVersion(ETrigger::Operation, $app->getVersion())
+        ;
+        
+        return $this->triggers()->update($trigger) > 0;
+    }
+
     protected function validateDataForEventInsert(?ITrigger $trigger, array $eventData): void
     {
         if (!$trigger) {
