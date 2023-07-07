@@ -1,5 +1,9 @@
 # 1.3.1
 
+- Fixed getting active triggers.
+
+# 1.3.0
+
 - Added extension `IInstance::getActiveTriggers(ETrigger $et, IParametred $evOrOp): ITrigger[]`.
 
 # 1.2.1
