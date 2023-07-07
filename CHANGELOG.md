@@ -1,3 +1,8 @@
+# 1.2.1
+
+- Added `TriggerEmptyData` exception.
+- Marked `TriggerEmptyEventData` as deprecated.
+
 # 1.2.0
 
 - Added method `ITriggerService::insertOperation(string $triggerId, array $opData): ITriggers`.

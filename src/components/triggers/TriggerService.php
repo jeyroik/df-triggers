@@ -1,7 +1,7 @@
 <?php
 namespace deflou\components\triggers;
 
-use deflou\components\exceptions\triggers\TriggerEmptyEventData;
+use deflou\components\exceptions\triggers\TriggerEmptyData;
 use deflou\components\exceptions\triggers\TriggerIncorrectState;
 use deflou\interfaces\applications\vendors\IVendor;
 use deflou\interfaces\instances\IInstance;
@@ -147,7 +147,7 @@ class TriggerService extends Item implements ITriggerService
         }
 
         if (empty($data)) {
-            throw new TriggerEmptyEventData();
+            throw new TriggerEmptyData();
         }
     }
 
