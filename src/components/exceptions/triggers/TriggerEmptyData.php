@@ -3,10 +3,7 @@ namespace deflou\components\exceptions\triggers;
 
 use Throwable;
 
-/**
- * @deprecated use TriggerEmptyData instead
- */
-class TriggerEmptyEventData extends \Exception
+class TriggerEmptyData extends \Exception
 {
     /**
      * Missed constructor.
@@ -16,6 +13,6 @@ class TriggerEmptyEventData extends \Exception
      */
     public function __construct($message = "", $code = 0, Throwable $previous = null)
     {
-        parent::__construct('Empty event data', $code, $previous);
+        parent::__construct('Empty data', $code, $previous);
     }
 }
