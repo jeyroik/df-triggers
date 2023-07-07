@@ -29,13 +29,27 @@ interface ITriggerService extends IItem
     public function createTriggerForInstance(IInstance $instance, string $vendorName): ITrigger;
 
     /**
-     * Insert event data into trigger.
+     * Insert event data into a trigger.
      *
      * @param  string   $triggerId
-     * @param  array    $eventData [name => '...', 'params' => ['<par1.name>' => ['<par1.value>']]]
+     * @param  array    $eventData [name => '...', 'params' => ['<par1.name>' => ['value' => '<par1.value>']]]
      * @return ITrigger with inserted and detailed event
      */
     public function insertEvent(string $triggerId, array $eventData): ITrigger;
+
+    /**
+     * Insert operation data into a trigger
+     *
+     * @param string $triggerId
+     * @param array $opData [name => '', 'params' => [
+     *                                      '<p1.name>'=> [
+     *                                          'value' => [
+     *                                              'plugins' => ['<plug1.name>', ...], 
+     *                                              'value' => ''
+     *                       ]]]]
+     * @return ITrigger with inserted and detailed event
+     */
+    public function insertOperation(string $triggerId, array $opData): ITrigger;
 
     public function insertOperationInstance(ITrigger &$trigger, IInstance $instance): bool;
 }
