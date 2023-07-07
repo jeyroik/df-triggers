@@ -1,12 +1,14 @@
 <?php
 
 use deflou\components\extensions\instances\ExtensionInstanceResolver;
+use deflou\components\extensions\instances\ExtensionInstanceTriggers;
 use deflou\components\extensions\triggers\ExtensionTrigger;
 use deflou\components\plugins\triggers\PluginTriggerOpTemplateArray;
 use deflou\components\triggers\events\conditions\plugins\ConditionBasic;
 use deflou\components\triggers\operations\plugins\PluginEvent;
 use deflou\components\triggers\operations\plugins\PluginNow;
 use deflou\interfaces\extensions\instances\IExtensionInstanceResolver;
+use deflou\interfaces\extensions\instances\IExtensionInstanceTriggers;
 use deflou\interfaces\extensions\triggers\IExtensionTrigger;
 use deflou\interfaces\instances\IInstance;
 use deflou\interfaces\stages\triggers\IStageTriggerOpTemplate;
@@ -31,6 +33,12 @@ return [
             IExtension::FIELD__INTERFACE => IExtensionInstanceResolver::class,
             IExtension::FIELD__SUBJECT => IInstance::SUBJECT,
             IExtension::FIELD__METHODS => ['buildResolver']
+        ],
+        [
+            IExtension::FIELD__CLASS => ExtensionInstanceTriggers::class,
+            IExtension::FIELD__INTERFACE => IExtensionInstanceTriggers::class,
+            IExtension::FIELD__SUBJECT => IInstance::SUBJECT,
+            IExtension::FIELD__METHODS => ['getActiveTriggers']
         ],
         [
             IExtension::FIELD__CLASS => ExtensionTrigger::class,

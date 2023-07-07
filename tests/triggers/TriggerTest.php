@@ -22,6 +22,7 @@ use deflou\components\triggers\TriggerService;
 use deflou\interfaces\applications\IApplication;
 use deflou\interfaces\applications\vendors\IVendor;
 use deflou\interfaces\extensions\instances\IExtensionInstanceResolver;
+use deflou\interfaces\extensions\instances\IExtensionInstanceTriggers;
 use deflou\interfaces\instances\IInstance;
 use deflou\interfaces\resolvers\events\IResolvedEvent;
 use deflou\interfaces\resolvers\IResolver;
@@ -84,6 +85,10 @@ class TriggerTest extends ExtasTestCase
          */
         $app = $triggerService->applications()->one([IApplication::FIELD__NAME => 'test']);
         $instanceService = new InstanceService();
+
+        /**
+         * @var IExtensionInstanceTriggers|IInstance $instance
+         */
         $instance = $instanceService->createInstanceFromApplication($app, 'vendor0');
         
 
@@ -133,6 +138,8 @@ class TriggerTest extends ExtasTestCase
         $this->assertTrue($inserted);
         
         $trigger1->activate();
+
+        $this->assertCount(1, $instance->getActiveTriggers(ETrigger::Event, $instance->buildEvents()->buildOne($trigger1->buildEvent()->getName())));
 
         $trigger2 = $triggerService->createTriggerForInstance($instance, 'vendor0');
         $trigger2->setEvent([
