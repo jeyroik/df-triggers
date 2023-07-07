@@ -18,7 +18,7 @@ class ExtensionInstanceTriggers extends Extension implements IExtensionInstanceT
 
         return $triggerService->triggers()->all([
             $et->getInstIdField() => $instance->getId(),
-            $et->value => $evOrOp->getName(),
+            $et->value . '.' . $evOrOp::FIELD__NAME => $evOrOp->getName(),
             ITrigger::FIELD__STATE => ETriggerState::Active->value
         ]);
     }
