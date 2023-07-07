@@ -1,3 +1,7 @@
+# 1.3.1
+
+- Added extension `IInstance::getActiveTriggers(ETrigger $et, IParametred $evOrOp): ITrigger[]`.
+
 # 1.2.1
 
 - Added `TriggerEmptyData` exception.
