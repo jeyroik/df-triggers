@@ -1,3 +1,7 @@
+# 1.2.0
+
+- Added method `ITriggerService::insertOperation(string $triggerId, array $opData): ITriggers`.
+
 # 1.1.0
 
 - Added `ITriggerService::insertOperationInstance(ITrigger &$trigger, IInstance $instance): bool`.
@@ -22,7 +26,7 @@
 - Added methods to `IExtensionTrigger`:
   - `stateIs(ETriggerState $state): bool`
   - `stateIsNot(ETriggerState $state): bool`
-- Added method `insertEvent(string $triggerId, array $eventData)` to `ITriggerService`.
+- Added method `ITriggerService::insertEvent(string $triggerId, array $eventData)`.
 
 # 0.5.0
 

@@ -9,6 +9,7 @@ use deflou\interfaces\resolvers\events\IResolvedEvent;
 use deflou\interfaces\triggers\events\ITriggerEvent;
 use deflou\interfaces\triggers\ITrigger;
 use deflou\interfaces\triggers\ITriggerService;
+use deflou\interfaces\triggers\operations\ITriggerOperation;
 use extas\components\exceptions\MissedOrUnknown;
 use extas\components\Item;
 use extas\interfaces\parameters\IParam;
@@ -80,7 +81,7 @@ class TriggerService extends Item implements ITriggerService
          */
         $trigger = $this->triggers()->one([ITrigger::FIELD__ID => $triggerId]);
 
-        $this->validateDataForEventInsert($trigger, $eventData);
+        $this->validateDataForInsert($trigger, $eventData);
 
         $params = $eventData[ITriggerEvent::FIELD__PARAMS] ?? [];
 
@@ -89,7 +90,7 @@ class TriggerService extends Item implements ITriggerService
 
         $eventData[ITriggerEvent::FIELD__TITLE] = $eventDesc->getTitle();
         $eventData[ITriggerEvent::FIELD__DESCRIPTION] = $eventDesc->getDescription();
-        $eventData[ITriggerEvent::FIELD__PARAMS] = $this->insertEventParams($eventDesc, $params);
+        $eventData[ITriggerEvent::FIELD__PARAMS] = $this->insertParams($eventDesc, $params);
 
         $trigger->setEvent($eventData);
         $this->triggers()->update($trigger);
@@ -97,6 +98,30 @@ class TriggerService extends Item implements ITriggerService
         return $trigger;
     }
 
+    public function insertOperation(string $triggerId, array $opData): ITrigger
+    {
+        /**
+         * @var ITrigger $trigger
+         */
+        $trigger = $this->triggers()->one([ITrigger::FIELD__ID => $triggerId]);
+
+        $this->validateDataForInsert($trigger, $opData);
+
+        $params = $opData[ITriggerOperation::FIELD__PARAMS] ?? [];
+
+        $opInstance = $trigger->getInstance(ETrigger::Operation);
+        $opDesc = $opInstance->buildOperations()->buildOne($opData[ITriggerOperation::FIELD__NAME]);
+
+        $opData[ITriggerEvent::FIELD__TITLE] = $opDesc->getTitle();
+        $opData[ITriggerEvent::FIELD__DESCRIPTION] = $opDesc->getDescription();
+        $opData[ITriggerEvent::FIELD__PARAMS] = $this->insertParams($opDesc, $params);
+
+        $trigger->setOperation($opData);
+        $this->triggers()->update($trigger);
+
+        return $trigger;
+    }
+    
     public function insertOperationInstance(ITrigger &$trigger, IInstance $instance): bool
     {
         $app = $instance->getApplication();
@@ -109,24 +134,26 @@ class TriggerService extends Item implements ITriggerService
         return $this->triggers()->update($trigger) > 0;
     }
 
-    protected function validateDataForEventInsert(?ITrigger $trigger, array $eventData): void
+    protected function validateDataForInsert(?ITrigger $trigger, array $data): void
     {
         if (!$trigger) {
             throw new MissedOrUnknown('trigger');
         }
 
         if ($trigger->getState() != ETriggerState::OnConstruct->value) {
-            throw new TriggerIncorrectState(ETriggerState::OnConstruct->value . TriggerIncorrectState::DELIMITER . $trigger->getState());
+            throw new TriggerIncorrectState(
+                ETriggerState::OnConstruct->value . TriggerIncorrectState::DELIMITER . $trigger->getState()
+            );
         }
 
-        if (empty($eventData)) {
+        if (empty($data)) {
             throw new TriggerEmptyEventData();
         }
     }
 
-    protected function insertEventParams(IParametred $eventDesc, array $params): array
+    protected function insertParams(IParametred $desc, array $params): array
     {
-        $descParams = $eventDesc->buildParams()->buildAll();
+        $descParams = $desc->buildParams()->buildAll();
 
         foreach ($descParams as $paramName => $param) {
             if (isset($params[$paramName])) {

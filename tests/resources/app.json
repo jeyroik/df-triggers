@@ -49,8 +49,14 @@
     "operations": {
         "test_operation": {
             "name": "test_operation",
+            "title": "Test operation",
+            "description": "This is test operation",
             "params": {
-
+                "some": {
+                    "name": "some",
+                    "title": "Some",
+                    "description": "Some param"
+                }
             }
         },
         "test_operation2": {

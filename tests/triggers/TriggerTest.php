@@ -313,6 +313,26 @@ class TriggerTest extends ExtasTestCase
         $this->assertEquals('Some', $param->getTitle());
         $this->assertEquals('Some param', $param->getDescription());
 
+        $externalData = [
+            ITriggerOperation::FIELD__NAME => 'test_operation',
+            ITriggerOperation::FIELD__PARAMS => [
+                'some' => [
+                    IParam::FIELD__VALUE => [
+                        ITriggerOperationValue::FIELD__PLUGINS => ['event', 'now'],
+                        ITriggerOperationValue::FIELD__VALUE => 'ok @event.some on @now(Y.m.d)@'
+                    ]
+                ]
+            ]
+        ];
+        $trigger = $triggerService->insertOperation($trigger->getId(), $externalData);
+        $op = $trigger->buildOperation();
+        $this->assertEquals('Test operation', $op->getTitle());
+        $this->assertEquals('This is test operation', $op->getDescription());
+
+        $param = $op->buildParams()->buildOne('some');
+        $this->assertEquals('Some', $param->getTitle());
+        $this->assertEquals('Some param', $param->getDescription());
+
         $opService = new TriggerOperationService();
         $opService->plugins()->create(new Plugin([
             Plugin::FIELD__CLASS => PluginTriggerOpTemplateArray::class,
