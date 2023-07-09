@@ -1,3 +1,13 @@
+# 2.0.0
+
+- Added `IHaveParams`, `IHaveInstance` to `IResolvedOperation`.
+- Added `ResolvedOperation`.
+- Added protected method `Resolver::compileOperationParams(ITriggerOperation $operation, IResolvedEvent $resolvedEvent): array`.
+- Added stages
+  - IStageRequestHeaders: you can easy add headers to a http request now.
+  - IStageRequestOptions: you can easy add options to a http request now.
+  - IStageRequestResponse: you can easy parse response from a http request now.
+
 # 1.3.1
 
 - Fixed getting active triggers.

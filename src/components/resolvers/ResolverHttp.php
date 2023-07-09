@@ -12,7 +12,10 @@ use deflou\interfaces\resolvers\events\IResolvedEvent;
 use deflou\interfaces\resolvers\operations\IOperationHttp;
 use deflou\interfaces\triggers\ITrigger;
 use deflou\interfaces\resolvers\operations\IResolvedOperation;
+use deflou\interfaces\stages\resolvers\http\IStageRequestHeaders;
+use deflou\interfaces\stages\resolvers\http\IStageRequestOptions;
 use extas\components\parameters\Param;
+use extas\interfaces\parameters\IParam;
 
 /**
  * in the application config
@@ -24,9 +27,9 @@ use extas\components\parameters\Param;
  *          ...,
  *          "value": "https://base.url"
  *      },
- *      "operaton__method": {
+ *      "operation__method": {
  *          ...,
- *          "value": "post" // post|get|put|delete
+ *          "value": "post" // post|get|put|delete|etc
  *      },
  *      "<operation.name>__url": {
  *          ...,
@@ -34,7 +37,7 @@ use extas\components\parameters\Param;
  *      },
  *      "<operation.name>__method": { // may be omitted
  *          ...,
- *          "value": "post" // post|get|put|delete
+ *          "value": "post" // post|get|put|delete|etc
  *      }
  *  }
  * }
@@ -77,21 +80,46 @@ class ResolverHttp extends Resolver implements IEventHttp, IOperationHttp
     public function resolveOperation(IResolvedEvent $resolvedEvent, ITrigger $trigger): IResolvedOperation
     {
         $operation = $trigger->buildOperation();
-        $options = $trigger->getInstance(ETrigger::Operation)->buildOptions();
+        $resolvedOperation = $this->createResolvedOperationObject($trigger);
+        $resolvedOperation->addParam(new Param([
+            Param::FIELD__NAME => ResolvedOperationHttp::PARAM__REQUEST_PARAMS,
+            Param::FIELD__VALUE => $this->compileOperationParams($operation, $resolvedEvent)
+        ]));
+
+        return $resolvedOperation;
+    }
+
+    protected function createResolvedOperationObject(ITrigger $trigger): IResolvedOperation
+    {
+        $operation = $trigger->buildOperation();
+        $instance = $trigger->getInstance(ETrigger::Operation);
+        $options = $instance->buildOptions();
+        
+        $requestHeaders = [];
+        foreach ($this->getPluginsByStage(IStageRequestHeaders::NAME) as $plugin) {
+            $plugin($requestHeaders, $options);
+        }
+
+        $requestOptions = [];
+        foreach ($this->getPluginsByStage(IStageRequestOptions::NAME) as $plugin) {
+            $plugin($requestOptions, $options);
+        }
+        
         $resolvedOperation = new ResolvedOperationHttp([
             ResolvedOperationHttp::FIELD__METHOD => $this->getOperationMethod($options, $operation->getName()),
             ResolvedOperationHttp::FIELD__URL => $options->buildOne(static::OPTION__BASE_URL)->getValue() 
-                                               . $options->buildOne($operation->getName() . static::OPTION__URL_PREFIX)->getValue()
+                                               . $options->buildOne($operation->getName() . static::OPTION__URL_PREFIX)->getValue(),
+            ResolvedOperationHttp::FIELD__PARAMS => [
+                ResolvedOperationHttp::PARAM__REQUEST_HEADERS => [
+                    IParam::FIELD__NAME => ResolvedOperationHttp::PARAM__REQUEST_HEADERS,
+                    IParam::FIELD__VALUE => $requestHeaders
+                ],
+                ResolvedOperationHttp::PARAM__REQUEST_OPTIONS => [
+                    IParam::FIELD__NAME => ResolvedOperationHttp::PARAM__REQUEST_OPTIONS,
+                    IParam::FIELD__VALUE => $requestOptions
+                ]
+            ]
         ]);
-        
-        $operation = $trigger->buildOperation();
-        foreach ($operation->eachParamValue() as $name => $triggerOperationValue) {
-            $triggerOperationValue->applyPlugins($resolvedEvent);
-            $resolvedOperation->addParam(new Param([
-                Param::FIELD__NAME => $name,
-                Param::FIELD__VALUE => $triggerOperationValue->getValue()
-            ]));
-        }
 
         return $resolvedOperation;
     }
