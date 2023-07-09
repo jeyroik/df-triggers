@@ -26,6 +26,7 @@ use deflou\interfaces\extensions\instances\IExtensionInstanceTriggers;
 use deflou\interfaces\instances\IInstance;
 use deflou\interfaces\resolvers\events\IResolvedEvent;
 use deflou\interfaces\resolvers\IResolver;
+use deflou\interfaces\resolvers\operations\IResolvedOperationHttp;
 use deflou\interfaces\resolvers\operations\results\IOperationResultData;
 use deflou\interfaces\stages\triggers\IStageTriggerOpTemplate;
 use deflou\interfaces\triggers\events\conditions\ICondition;
@@ -198,7 +199,14 @@ class TriggerTest extends ExtasTestCase
                 $resolvedOp = $opInstance->buildResolver('test_event', [])->resolveOperation($resolvedEvent, $trigger);
                 
                 $this->assertInstanceOf(ResolvedOperationHttp::class, $resolvedOp);
-                $this->assertEquals('Got 5 as param1 from event at ' . date('Y-m-d'), $resolvedOp->buildParams()->buildOne('param2')->getValue());
+
+                $params = $resolvedOp->buildParams();
+                $this->assertTrue($params->hasOne(IResolvedOperationHttp::PARAM__REQUEST_PARAMS));
+                $this->assertTrue($params->hasOne(IResolvedOperationHttp::PARAM__REQUEST_HEADERS));
+                $this->assertTrue($params->hasOne(IResolvedOperationHttp::PARAM__REQUEST_OPTIONS));
+
+                $requestParams = $params->buildOne(IResolvedOperationHttp::PARAM__REQUEST_PARAMS)->getValue();
+                $this->assertEquals('Got 5 as param1 from event at ' . date('Y-m-d'), $requestParams['param2']);
 
                 $result = $resolvedOp->run();
                 $this->assertFalse($result->isSuccess());

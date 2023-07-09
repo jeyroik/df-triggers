@@ -1,25 +1,16 @@
 <?php
 namespace deflou\components\resolvers\operations;
 
-use deflou\components\instances\THasInstance;
 use deflou\components\resolvers\operations\results\EResultStatus;
 use deflou\components\resolvers\operations\results\OperationResult;
-use deflou\interfaces\instances\IHaveInstance;
-use deflou\interfaces\resolvers\operations\IResolvedOperation;
+use deflou\interfaces\resolvers\operations\IResolvedOperationHttp;
 use deflou\interfaces\resolvers\operations\results\IOperationResult;
-use extas\components\Item;
-use extas\components\parameters\THasParams;
-use extas\interfaces\parameters\IHaveParams;
+use deflou\interfaces\stages\resolvers\http\IStageRequestResponse;
 use Psr\Http\Message\ResponseInterface;
 
-class ResolvedOperationHttp extends Item implements IResolvedOperation, IHaveParams, IHaveInstance
+class ResolvedOperationHttp extends ResolvedOperation implements IResolvedOperationHttp
 {
     use TOperationHttp;
-    use THasParams;
-    use THasInstance;
-
-    public const FIELD__METHOD = 'method';
-    public const FIELD__URL = 'url';
 
     public function run(): IOperationResult
     {
@@ -29,16 +20,15 @@ class ResolvedOperationHttp extends Item implements IResolvedOperation, IHavePar
              * @var ResponseInterface $response
              */
             try {
-                $response = $this->$method($this->getUrl(), $this->getParamsValues());
+                $response = $this->sendRequest($method);
             } catch (\Exception $e) {
                 return $this->makeFailedResult($e->getMessage());
             }
-            $body = $response->getBody() . '';
             $data = [];
             $instanceName = $this->getInstance()->getName();
 
-            foreach ($this->getPluginsByStage('http.operation.resolve.body.' . $instanceName) as $plugin) {
-                $plugin($body, $data);
+            foreach ($this->getPluginsByStage(IStageRequestResponse::NAME . $instanceName) as $plugin) {
+                $plugin($response, $data);
             }
 
             return new OperationResult([
@@ -59,6 +49,16 @@ class ResolvedOperationHttp extends Item implements IResolvedOperation, IHavePar
     public function getUrl(): string
     {
         return $this->config[static::FIELD__URL] ?? '';
+    }
+
+    protected function sendRequest(string $method): ResponseInterface
+    {
+        $opParams = $this->buildParams();
+        $requestParams = $opParams->buildOne(static::PARAM__REQUEST_PARAMS)->getValue();
+        $requestHeaders = $opParams->buildOne(static::PARAM__REQUEST_HEADERS)->getValue();
+        $requestOptions = $opParams->buildOne(static::PARAM__REQUEST_OPTIONS)->getValue();
+
+        return $this->$method($this->getUrl(), $requestParams, $requestHeaders, $requestOptions);
     }
 
     protected function makeFailedResult(string $message): IOperationResult
