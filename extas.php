@@ -7,6 +7,7 @@ use deflou\components\plugins\triggers\PluginTriggerOpTemplateArray;
 use deflou\components\triggers\events\conditions\plugins\ConditionBasic;
 use deflou\components\triggers\operations\plugins\PluginEvent;
 use deflou\components\triggers\operations\plugins\PluginNow;
+use deflou\components\triggers\operations\plugins\PluginText;
 use deflou\interfaces\extensions\instances\IExtensionInstanceResolver;
 use deflou\interfaces\extensions\instances\IExtensionInstanceTriggers;
 use deflou\interfaces\extensions\triggers\IExtensionTrigger;
@@ -57,14 +58,21 @@ return [
     ],
     "trigger_operation_plugins" => [
         [
-            ITriggerOperationPlugin::FIELD__NAME => 'event',
+            ITriggerOperationPlugin::FIELD__NAME => PluginText::NAME,
+            ITriggerOperationPlugin::FIELD__TITLE => 'Текст',
+            ITriggerOperationPlugin::FIELD__DESCRIPTION => 'Вставить какой-либо текст',
+            ITriggerOperationPlugin::FIELD__CLASS => PluginText::class,
+            ITriggerOperationPlugin::FIELD__APPLICATION_NAME => ITriggerOperationService::ANY
+        ],
+        [
+            ITriggerOperationPlugin::FIELD__NAME => PluginEvent::NAME,
             ITriggerOperationPlugin::FIELD__TITLE => 'Данные из события',
             ITriggerOperationPlugin::FIELD__DESCRIPTION => 'Подставить данные из события',
             ITriggerOperationPlugin::FIELD__CLASS => PluginEvent::class,
             ITriggerOperationPlugin::FIELD__APPLICATION_NAME => ITriggerOperationService::ANY
         ],
         [
-            ITriggerOperationPlugin::FIELD__NAME => 'now',
+            ITriggerOperationPlugin::FIELD__NAME => PluginNow::NAME,
             ITriggerOperationPlugin::FIELD__TITLE => 'Текущие время и дата',
             ITriggerOperationPlugin::FIELD__DESCRIPTION => 'Подставить текущее время и/или дату',
             ITriggerOperationPlugin::FIELD__CLASS => PluginNow::class,
