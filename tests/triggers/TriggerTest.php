@@ -1,8 +1,6 @@
 <?php
 
-use deflou\components\applications\Application;
 use deflou\components\applications\AppWriter;
-use deflou\components\applications\EStates;
 use deflou\components\instances\InstanceService;
 use deflou\components\plugins\triggers\PluginTriggerOpTemplateArray;
 use deflou\components\resolvers\operations\ResolvedOperationHttp;
@@ -20,7 +18,6 @@ use deflou\components\triggers\operations\TriggerOperationService;
 use deflou\components\triggers\THasTrigger;
 use deflou\components\triggers\TriggerService;
 use deflou\interfaces\applications\IApplication;
-use deflou\interfaces\applications\vendors\IVendor;
 use deflou\interfaces\extensions\instances\IExtensionInstanceResolver;
 use deflou\interfaces\extensions\instances\IExtensionInstanceTriggers;
 use deflou\interfaces\instances\IInstance;
@@ -43,7 +40,6 @@ use extas\components\Item;
 use extas\components\parameters\Param;
 use extas\components\plugins\Plugin;
 use extas\interfaces\parameters\IParam;
-use extas\interfaces\parameters\IParametred;
 use tests\ExtasTestCase;
 
 /**
@@ -333,7 +329,7 @@ class TriggerTest extends ExtasTestCase
             ITriggerOperation::FIELD__PARAMS => [
                 'some' => [
                     IParam::FIELD__VALUE => [
-                        ITriggerOperationValue::FIELD__PLUGINS => ['event', 'now'],
+                        ITriggerOperationValue::FIELD__PLUGINS => ['text', 'event', 'now'],
                         ITriggerOperationValue::FIELD__VALUE => 'ok @event.some on @now(Y.m.d)@'
                     ]
                 ]
@@ -367,7 +363,6 @@ class TriggerTest extends ExtasTestCase
             $this->assertArrayHasKey('name', $template['plugin']);
             $this->assertArrayHasKey('title', $template['plugin']);
             $this->assertArrayHasKey('description', $template['plugin']);
-
             $this->assertArrayHasKey('items', $template);
             $this->assertIsMissedObjects($template['items']);
         }

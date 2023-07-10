@@ -9,6 +9,8 @@ use deflou\interfaces\triggers\operations\plugins\IPluginDispatcher;
 
 class PluginNow implements IPluginDispatcher
 {
+    public const NAME = 'now';
+
     public function __invoke(string|int $triggerValue, IResolvedEvent $event): string|int
     {
         return preg_replace_callback('/\@now\((.*)\)\@/i', function ($matches) { return date($matches[1]);}, $triggerValue);

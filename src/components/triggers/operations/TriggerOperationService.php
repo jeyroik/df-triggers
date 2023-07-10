@@ -68,22 +68,38 @@ class TriggerOperationService extends Item implements ITriggerOperationService
         foreach ($plugins as $opPlugin) {
             $data = $opPlugin->getTemplateData($eventInstance, $trigger);
             $template = null;
-            foreach ($this->getPluginsByStage(IStageTriggerOpTemplate::NAME . $context) as $plugin) {
-                /**
-                 * @var IStageTriggerOpTemplate $plugin
-                 */
-                $plugin($data, $opPlugin, $template, $context);
+            
+            $this->applyContextPlugins($data, $opPlugin, $template, $context);
+            $this->applyPluginPlugins($data, $opPlugin, $template, $context);
+
+            if (!$template) {
+                continue;
             }
-            foreach ($this->getPluginsByStage(IStageTriggerOpTemplate::NAME . $context . '.' . $opPlugin->getName()) as $plugin) {
-                /**
-                 * @var IStageTriggerOpTemplate $plugin
-                 */
-                $plugin($data, $opPlugin, $template, $context);
-            }
+
             $result[$opPlugin->getName()] = $template;
         }
 
         return $result;
+    }
+
+    protected function applyContextPlugins(array $templateData, ITriggerOperationPlugin $opPlugin, mixed &$template, ITemplateContext $context): void
+    {
+        foreach ($this->getPluginsByStage(IStageTriggerOpTemplate::NAME . $context) as $plugin) {
+            /**
+             * @var IStageTriggerOpTemplate $plugin
+             */
+            $plugin($templateData, $opPlugin, $template, $context);
+        }
+    }
+
+    protected function applyPluginPlugins(array $templateData, ITriggerOperationPlugin $opPlugin, mixed &$template, ITemplateContext $context): void
+    {
+        foreach ($this->getPluginsByStage(IStageTriggerOpTemplate::NAME . $context . '.' . $opPlugin->getName()) as $plugin) {
+            /**
+             * @var IStageTriggerOpTemplate $plugin
+             */
+            $plugin($templateData, $opPlugin, $template, $context);
+        }
     }
 
     protected function getSubjectForExtension(): string

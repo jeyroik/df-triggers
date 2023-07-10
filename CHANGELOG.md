@@ -1,3 +1,8 @@
+# 2.1.0
+
+- Added operation plugin `text`.
+- Added skipping plugin, if there is no template for it.
+
 # 2.0.0
 
 - Added `IHaveParams`, `IHaveInstance` to `IResolvedOperation`.

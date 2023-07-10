@@ -12,14 +12,16 @@ class PluginTriggerOpTemplateArray extends Plugin implements IStageTriggerOpTemp
 
     public function __invoke(array $templateData, ITriggerOperationPlugin $plugin, mixed &$template, ITemplateContext $context): void
     {
-        $template = [
-            'plugin' => [
-                'name' => $plugin->getName(),
-                'title' => $plugin->getTitle(),
-                'description' => $plugin->getDescription(),
-            ],
-            'items' => $this->toArrayRecursive($templateData)
-        ];
+        if (!empty($templateData)) {
+            $template = [
+                'plugin' => [
+                    'name' => $plugin->getName(),
+                    'title' => $plugin->getTitle(),
+                    'description' => $plugin->getDescription(),
+                ],
+                'items' => $this->toArrayRecursive($templateData)
+            ];
+        }
     }
 
     protected function toArrayRecursive(array $item, array $result = []): array
