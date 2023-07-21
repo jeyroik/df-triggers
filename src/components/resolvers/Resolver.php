@@ -28,8 +28,10 @@ abstract class Resolver extends Item implements IResolver
         $requestParams = [];
 
         foreach ($operation->eachParamValue() as $name => $triggerOperationValue) {
-            $triggerOperationValue->applyPlugins($resolvedEvent);
-            $requestParams[$name] = $triggerOperationValue->getValue();
+            foreach ($triggerOperationValue->eachSense() as $sense) {
+                $sense->applyPlugins($resolvedEvent);
+                $requestParams[$name] = $sense->getValue();
+            }
         }
 
         return $requestParams;

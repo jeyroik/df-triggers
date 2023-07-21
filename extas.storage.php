@@ -28,22 +28,11 @@ return [
                                   .'\\' . RepoItem::class . '::throwIfExist($this, $item, [\'name\']);'
             ]
         ],
-        "trigger_operation_plugins" => [
+        "trigger_value_plugins" => [
             "namespace" => "deflou\\repositories",
-            "item_class" => "deflou\\components\\triggers\\operations\\TriggerOperationPlugin",
+            "item_class" => "deflou\\components\\triggers\\values\\plugins\\ValuePlugin",
             "pk" => "id",
-            "aliases" => ["triggerOperationPlugins"],
-            "hooks" => [],
-            "code" => [
-                'create-before' => '\\' . RepoItem::class . '::setId($item);'
-                                  .'\\' . RepoItem::class . '::throwIfExist($this, $item, [\'name\']);'
-            ]
-        ],
-        "trigger_event_value_plugins" => [
-            "namespace" => "deflou\\repositories",
-            "item_class" => "deflou\\components\\triggers\\events\\TriggerEventValuePlugin",
-            "pk" => "id",
-            "aliases" => ["triggerEventValuePlugins"],
+            "aliases" => ["triggerValuePlugins"],
             "hooks" => [],
             "code" => [
                 'create-before' => '\\' . RepoItem::class . '::setId($item);'

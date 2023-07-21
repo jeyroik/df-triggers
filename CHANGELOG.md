@@ -1,3 +1,27 @@
+# 3.0.0
+
+- Unified events and operations values.
+  - Removed `ITriggerOperationValue`
+  - Removed `ITriggerEventValue`
+  - Removed `ITriggerEventValuePlugin`
+  - Removed `ITriggerOperationPlugin`
+  - Removed `ITriggerEventValueService`
+  - Removed `ITriggerOperationService`
+  - Changed plugins namespace:
+    - `PluginEvent`: deflou\components\triggers\operations\plugins -> deflou\components\triggers\values\plugins
+    - `PluginNow`: deflou\components\triggers\operations\plugins -> deflou\components\triggers\values\plugins
+    - `PluginText`: deflou\components\triggers\operations\plugins -> deflou\components\triggers\values\plugins
+  - Renamed and changed namespace for `ValuePluginList` -> `PluginList`
+    - Namespace: deflou\components\triggers\events\plugins -> deflou\components\triggers\values\plugins
+  - Removed `IValueDescription`
+  - Value consits from senses now, so there are can be several senses (for example, several conditions for value).
+  - Plugins may be applied to event values too.
+- Added edges for condition (to compile several conditions together, see tests for example):
+  - `And`
+  - `Or`
+- Added `EConditionEdge`
+- Changed `TemplateContext` namespace to values.
+
 # 2.1.0
 
 - Added operation plugin `text`.

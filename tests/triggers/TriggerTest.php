@@ -8,34 +8,33 @@ use deflou\components\resolvers\operations\results\EResultStatus;
 use deflou\components\resolvers\ResolverHttp;
 use deflou\components\triggers\ETrigger;
 use deflou\components\triggers\ETriggerState;
+use deflou\components\triggers\events\conditions\Condition;
 use deflou\components\triggers\events\conditions\ConditionService;
+use deflou\components\triggers\events\conditions\EConditionEdge;
 use deflou\components\triggers\events\conditions\plugins\ConditionBasic;
-use deflou\components\triggers\events\plugins\ValuePluginList;
-use deflou\components\triggers\events\TriggerEventValuePlugin;
-use deflou\components\triggers\events\TriggerEventValueService;
-use deflou\components\triggers\operations\plugins\templates\TemplateContext;
-use deflou\components\triggers\operations\TriggerOperationService;
 use deflou\components\triggers\THasTrigger;
+use deflou\components\triggers\Trigger;
 use deflou\components\triggers\TriggerService;
+use deflou\components\triggers\values\plugins\templates\TemplateContext;
+use deflou\components\triggers\values\plugins\ValuePlugin;
+use deflou\components\triggers\values\ValueSense;
+use deflou\components\triggers\values\ValueService;
 use deflou\interfaces\applications\IApplication;
 use deflou\interfaces\extensions\instances\IExtensionInstanceResolver;
 use deflou\interfaces\extensions\instances\IExtensionInstanceTriggers;
+use deflou\interfaces\extensions\triggers\IExtensionTriggerEventValue;
 use deflou\interfaces\instances\IInstance;
 use deflou\interfaces\resolvers\events\IResolvedEvent;
 use deflou\interfaces\resolvers\IResolver;
 use deflou\interfaces\resolvers\operations\IResolvedOperationHttp;
 use deflou\interfaces\resolvers\operations\results\IOperationResultData;
-use deflou\interfaces\stages\triggers\IStageTriggerOpTemplate;
-use deflou\interfaces\triggers\events\conditions\ICondition;
+use deflou\interfaces\stages\triggers\IStageTriggerTemplate;
 use deflou\interfaces\triggers\events\conditions\IConditionPlugin;
 use deflou\interfaces\triggers\events\ITriggerEvent;
-use deflou\interfaces\triggers\events\ITriggerEventValue;
-use deflou\interfaces\triggers\events\ITriggerEventValueService;
-use deflou\interfaces\triggers\events\plugins\IValueDescription;
 use deflou\interfaces\triggers\IHaveTrigger;
 use deflou\interfaces\triggers\ITrigger;
 use deflou\interfaces\triggers\operations\ITriggerOperation;
-use deflou\interfaces\triggers\operations\ITriggerOperationValue;
+use deflou\interfaces\triggers\values\IValueSense;
 use extas\components\Item;
 use extas\components\parameters\Param;
 use extas\components\plugins\Plugin;
@@ -104,10 +103,33 @@ class TriggerTest extends ExtasTestCase
                 'param1' => [
                     IParam::FIELD__NAME => 'param1',
                     IParam::FIELD__VALUE => [
-                        ITriggerEventValue::FIELD__VALUE => 5,
-                        ITriggerEventValue::FIELD__CONDITION => [
-                            ICondition::FIELD__PLUGIN => 'basic_conditions',
-                            ICondition::FIELD__CONDITION => 'eq'
+                        [
+                            IValueSense::FIELD__VALUE => 5,
+                            IValueSense::FIELD__PLUGINS_NAMES => ['text'],
+                            IValueSense::FIELD__PARAMS => [
+                                'basic_conditions' => [
+                                    IParam::FIELD__NAME => 'basic_conditions',
+                                    IParam::FIELD__VALUE => 'like'
+                                ],
+                                IExtensionTriggerEventValue::PARAM__EDGE => [
+                                    IParam::FIELD__NAME => IExtensionTriggerEventValue::PARAM__EDGE,
+                                    IParam::FIELD__VALUE => EConditionEdge::And->value
+                                ]
+                            ]
+                        ],
+                        [
+                            IValueSense::FIELD__VALUE => 50,
+                            IValueSense::FIELD__PLUGINS_NAMES => ['text'],
+                            IValueSense::FIELD__PARAMS => [
+                                'basic_conditions' => [
+                                    IParam::FIELD__NAME => 'basic_conditions',
+                                    IParam::FIELD__VALUE => '!eq'
+                                ],
+                                IExtensionTriggerEventValue::PARAM__EDGE => [
+                                    IParam::FIELD__NAME => IExtensionTriggerEventValue::PARAM__EDGE,
+                                    IParam::FIELD__VALUE => EConditionEdge::Or->value
+                                ]
+                            ]
                         ]
                     ]
                 ]
@@ -122,8 +144,10 @@ class TriggerTest extends ExtasTestCase
                 'param2' => [
                     IParam::FIELD__NAME => 'param2',
                     IParam::FIELD__VALUE => [
-                        ITriggerOperationValue::FIELD__PLUGINS => ['event', 'now'],
-                        ITriggerOperationValue::FIELD__VALUE => 'Got @event.param1 as param1 from event at @now(Y-m-d)@'
+                        [
+                            IValueSense::FIELD__PLUGINS_NAMES => ['text', 'event', 'now'],
+                            IValueSense::FIELD__VALUE => 'Got @event.param1 as param1 from event at @now(Y-m-d)@'
+                        ]
                     ]
                 ]
             ]
@@ -145,10 +169,19 @@ class TriggerTest extends ExtasTestCase
                 'param1' => [
                     IParam::FIELD__NAME => 'param1',
                     IParam::FIELD__VALUE => [
-                        ITriggerEventValue::FIELD__VALUE => 5,
-                        ITriggerEventValue::FIELD__CONDITION => [
-                            ICondition::FIELD__PLUGIN => 'basic_conditions',
-                            ICondition::FIELD__CONDITION => '!eq'
+                        [
+                            IValueSense::FIELD__VALUE => 5,
+                            IValueSense::FIELD__PLUGINS_NAMES => ['text'],
+                            IValueSense::FIELD__PARAMS => [
+                                'basic_conditions' => [
+                                    IParam::FIELD__NAME => 'basic_conditions',
+                                    IParam::FIELD__VALUE => '!like'
+                                ],
+                                IExtensionTriggerEventValue::PARAM__EDGE => [
+                                    IParam::FIELD__NAME => IExtensionTriggerEventValue::PARAM__EDGE,
+                                    IParam::FIELD__VALUE => EConditionEdge::And->value
+                                ]
+                            ]
                         ]
                     ]
                 ]
@@ -273,43 +306,25 @@ class TriggerTest extends ExtasTestCase
             $this->assertEquals('test', $d->getPlugin());
         }
 
-        $valueService = new TriggerEventValueService();
-        $valueService->triggerEventValuePlugins()->create(new TriggerEventValuePlugin([
-            TriggerEventValuePlugin::FIELD__NAME => 'simple_list',
-            TriggerEventValuePlugin::FIELD__APPLICATION_NAME => ITriggerEventValueService::ANY,
-            TriggerEventValuePlugin::FIELD__CLASS => ValuePluginList::class,
-            TriggerEventValuePlugin::FIELD__APPLY_TO => [ITriggerEventValueService::ANY],
-            TriggerEventValuePlugin::FIELD__PARAMS => [
-                ValuePluginList::PARAM__LIST => [
-                    IParam::FIELD__NAME => ValuePluginList::PARAM__LIST,
-                    IParam::FIELD__VALUE => [
-                        [
-                            IValueDescription::FIELD__NAME => 'test',
-                            IValueDescription::FIELD__TITLE => 'test',
-                            IValueDescription::FIELD__DESCRIPTION => 'test'
-                        ]
-                    ]
-                ]
-            ]
-        ]));
-
-        $values = $valueService->getValues($instance, 'test');
-        $this->assertCount(1, $values);
-
-        $value = array_shift($values);
-
-        $this->assertInstanceOf(IValueDescription::class, $value);
-
         $externalData = [
             ITriggerEvent::FIELD__NAME => 'test_event',
             ITriggerEvent::FIELD__PARAMS => [
                 'some' => [
                     IParam::FIELD__VALUE => [
-                        ITriggerEventValue::FIELD__CONDITION => [
-                            ICondition::FIELD__PLUGIN => 'basic_conditions',
-                            ICondition::FIELD__CONDITION => 'eq'
-                        ],
-                        ITriggerEventValue::FIELD__VALUE => 'ok'
+                        [
+                            IValueSense::FIELD__VALUE => 'ok',
+                            IValueSense::FIELD__PLUGINS_NAMES => ['text'],
+                            IValueSense::FIELD__PARAMS => [
+                                'basic_conditions' => [
+                                    IParam::FIELD__NAME => 'basic_conditions',
+                                    IParam::FIELD__VALUE => 'eq'
+                                ],
+                                IExtensionTriggerEventValue::PARAM__EDGE => [
+                                    IParam::FIELD__NAME => IExtensionTriggerEventValue::PARAM__EDGE,
+                                    IParam::FIELD__VALUE => EConditionEdge::And->value
+                                ]
+                            ]
+                        ]
                     ]
                 ]
             ]
@@ -329,8 +344,10 @@ class TriggerTest extends ExtasTestCase
             ITriggerOperation::FIELD__PARAMS => [
                 'some' => [
                     IParam::FIELD__VALUE => [
-                        ITriggerOperationValue::FIELD__PLUGINS => ['text', 'event', 'now'],
-                        ITriggerOperationValue::FIELD__VALUE => 'ok @event.some on @now(Y.m.d)@'
+                        [
+                            IValueSense::FIELD__PLUGINS_NAMES => ['text', 'event', 'now'],
+                            IValueSense::FIELD__VALUE => 'ok @event.some on @now(Y.m.d)@'
+                        ]
                     ]
                 ]
             ]
@@ -344,12 +361,12 @@ class TriggerTest extends ExtasTestCase
         $this->assertEquals('Some', $param->getTitle());
         $this->assertEquals('Some param', $param->getDescription());
 
-        $opService = new TriggerOperationService();
-        $opService->plugins()->create(new Plugin([
+        $vService = new ValueService();
+        $vService->plugins()->create(new Plugin([
             Plugin::FIELD__CLASS => PluginTriggerOpTemplateArray::class,
-            Plugin::FIELD__STAGE => IStageTriggerOpTemplate::NAME . PluginTriggerOpTemplateArray::CONTEXT__ARRAY . '.event'
+            Plugin::FIELD__STAGE => IStageTriggerTemplate::NAME . PluginTriggerOpTemplateArray::CONTEXT__ARRAY . '.event'
         ]));
-        $templates = $opService->getPluginsTemplates(
+        $templates = $vService->getPluginsTemplates(
             $trigger->getInstance(ETrigger::Operation), 
             $trigger, 
             new TemplateContext([
@@ -366,6 +383,40 @@ class TriggerTest extends ExtasTestCase
             $this->assertArrayHasKey('items', $template);
             $this->assertIsMissedObjects($template['items']);
         }
+    }
+
+    public function testBasics(): void
+    {
+        $vp = new ValuePlugin();
+        $vp->setApplyToParams(['test']);
+        $this->assertEquals(['test'], $vp->getApplyToParams());
+
+        $vs = new ValueSense([
+            ValueSense::FIELD__PLUGINS_NAMES => ['test']
+        ]);
+        $vs->addPluginsNames('test0', 'test1');
+        $this->assertEquals(['test', 'test0', 'test1'], $vs->getPluginsNames());
+
+        $state = ETriggerState::Active;
+        $trigger = new Trigger();
+        $state->activate($trigger);
+        $this->assertEquals(ETriggerState::Active->value, $trigger->getState());
+
+        ETriggerState::Suspended->set($trigger);
+        $this->assertEquals(ETriggerState::Suspended->value, $trigger->getState());
+        $this->assertEquals('Остановлен', ETriggerState::Suspended->title('unknown lang'));
+        
+        ETriggerState::Deleted->delete($trigger);
+        $this->assertEquals(ETriggerState::Deleted->value, $trigger->getState());
+
+        ETriggerState::Suspended->suspend($trigger);
+        $this->assertEquals(ETriggerState::Suspended->value, $trigger->getState());
+
+        $this->assertEquals('И', EConditionEdge::And->to(EConditionEdge::LANG__RU));
+
+        $cond = new Condition();
+        $cond->setPlugin('test')->setCondition('eq');
+        $this->assertEquals([Condition::FIELD__PLUGIN => 'test', Condition::FIELD__CONDITION => 'eq'], $cond->__toArray());
     }
 
     protected function assertIsMissedObjects(array $item, string $message = ''): bool

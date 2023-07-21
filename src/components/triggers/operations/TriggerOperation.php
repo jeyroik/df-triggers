@@ -1,7 +1,9 @@
 <?php
 namespace deflou\components\triggers\operations;
 
+use deflou\components\triggers\values\Value;
 use deflou\interfaces\triggers\operations\ITriggerOperation;
+use deflou\interfaces\triggers\values\IValue;
 use extas\components\Item;
 use extas\components\parameters\THasParams;
 use extas\components\THasDescription;
@@ -14,12 +16,17 @@ class TriggerOperation extends Item implements ITriggerOperation
     use THasDescription;
     use THasParams;
 
+    /**
+     * 
+     *
+     * @return Generator|IValue[]
+     */
     public function eachParamValue(): Generator
     {
         $params = $this->buildParams()->buildAll();
 
         foreach ($params as $name => $param) {
-            yield $name => new TriggerOperationValue($param->getValue());
+            yield $name => new Value($param->getValue());
         }
     }
 

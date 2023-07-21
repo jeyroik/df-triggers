@@ -1,10 +1,11 @@
 <?php
 namespace deflou\components\triggers\events\conditions;
 
+use deflou\interfaces\extensions\triggers\IExtensionTriggerEventValue;
 use deflou\interfaces\triggers\events\conditions\ICondition;
 use deflou\interfaces\triggers\events\conditions\IConditionPlugin;
 use deflou\interfaces\triggers\events\conditions\IConditionService;
-use deflou\interfaces\triggers\events\ITriggerEventValue;
+use deflou\interfaces\triggers\values\IValueSense;
 use extas\components\Item;
 use extas\interfaces\repositories\IRepository;
 
@@ -15,7 +16,11 @@ class ConditionService extends Item implements IConditionService
 {
     protected static $plugins = [];
 
-    public function buildCondition(ITriggerEventValue $value): ICondition
+    /**
+     * @param  IValueSense|IExtensionTriggerEventValue $value
+     * @return ICondition
+     */
+    public function buildCondition(IValueSense|IExtensionTriggerEventValue $value): ICondition
     {
         return new Condition($value->getCondition());
     }
@@ -31,7 +36,7 @@ class ConditionService extends Item implements IConditionService
         return self::$plugins[$pluginName];
     }
 
-    public function met(ITriggerEventValue $value, string|int $incomeEventValue): bool
+    public function met(IValueSense $value, string|int $incomeEventValue): bool
     {
         $condition = $this->buildCondition($value);
         $plugin = $this->buildPlugin($condition);

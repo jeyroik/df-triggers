@@ -1,7 +1,7 @@
 <?php
-namespace deflou\components\triggers\operations\plugins\templates;
+namespace deflou\components\triggers\values\plugins\templates;
 
-use deflou\interfaces\triggers\operations\plugins\templates\ITemplateContext;
+use deflou\interfaces\triggers\values\plugins\templates\ITemplateContext;
 use extas\components\Item;
 use extas\components\parameters\THasParams;
 use extas\components\THasName;

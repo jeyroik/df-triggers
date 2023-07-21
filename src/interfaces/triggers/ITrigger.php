@@ -43,10 +43,36 @@ use extas\interfaces\IItem;
  *              "name": "...",
  *              "title": "...",
  *              "description": "...",
- *              "value": {
- *                  "condition": {"plugin":"<condition.plugin.name>", "condition": "..."},//plugin: default_conditions, condition: eq
- *                  "value": ""
- *              }
+ *              "value": [
+ *                      {
+ *                          "value": "@now(Y.m.d)(-2d)@",
+ *                          "plugins_names": ["now"],
+ *                          "params": {
+ *                              "<condition.dispatcher.name>": {
+ *                                  "name": "<condition.dispatcher.name>",
+ *                                  "value": "gt"
+ *                              },
+ *                              "edge": {
+ *                                  "name": "edge",
+ *                                  "value": "and"
+ *                              }
+ *                          }
+ *                      },
+ *                      {
+ *                          "value": "@now(Y.m.d)(0)@",
+ *                          "plugins_names": ["now"],
+ *                          "params": {
+ *                              "<condition.dispatcher.name>": {
+ *                                  "name": "<condition.dispatcher.name>",
+ *                                  "value": "lt"
+ *                              },
+ *                              "edge": {
+ *                                  "name": "edge",
+ *                                  "value": "and"
+ *                              }
+ *                          }
+ *                      },
+ *              ]
  *          }
  *      }
  *  },
@@ -59,10 +85,11 @@ use extas\interfaces\IItem;
  *              "name": "...",
  *              "title": "...",
  *              "description": "...",
- *              "value": {
- *                  "value": "Got @event.param1@ on @now(Y.m.d H:i:s)@",
- *                  "plugins": ["event", "now"]
- *              }
+ *              "value": [{
+ *                 "value": "Got @event.param1@ on @now(Y.m.d H:i:s)(0)@",
+ *                 "plugins_names": ["event", "now"],
+ *                 "params": {}
+ *              }]
  *          }
  *      }
  *  }
