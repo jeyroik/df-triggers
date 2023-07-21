@@ -13,23 +13,23 @@
     "options": {
         "operation__base_url": {
             "name": "operation__base_url",
-            "value": "http://localhost"
+            "default": "http://localhost"
         },
-        "operaton__method": {
-            "name": "operaton__method",
-            "value": "post"
+        "operation__method": {
+            "name": "operation__method",
+            "default": "post"
         },
         "test_operation__url": {
             "name": "test_operation__url",
-            "value": "/operation/path?with=param&or=without"
+            "default": "/operation/path?with=param&or=without"
         },
         "test_operation__method": {
             "name": "test_operation__method",
-            "value": "get"
+            "default": "get"
         },
         "test_operation2__url": {
             "name": "test_operation__url",
-            "value": "/operation2"
+            "default": "/operation2"
         }
     },
     "events": {

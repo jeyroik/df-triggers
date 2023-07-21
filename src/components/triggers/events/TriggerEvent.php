@@ -1,6 +1,7 @@
 <?php
 namespace deflou\components\triggers\events;
 
+use deflou\components\triggers\values\Value;
 use deflou\interfaces\triggers\events\ITriggerEvent;
 use deflou\interfaces\triggers\events\ITriggerEventValue;
 use extas\components\Item;
@@ -23,7 +24,9 @@ class TriggerEvent extends Item implements ITriggerEvent
         $params = $this->buildParams()->buildAll();
 
         foreach ($params as $name => $param) {
-            yield $name => new TriggerEventValue($param->getValue());
+            $value = new Value($param->getValue());
+
+            yield $name => $value->eachSense();
         }
     }
 

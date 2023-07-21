@@ -3,18 +3,22 @@ namespace deflou\components\triggers;
 
 use deflou\components\exceptions\triggers\TriggerEmptyData;
 use deflou\components\exceptions\triggers\TriggerIncorrectState;
+use deflou\components\triggers\events\conditions\EConditionEdge;
 use deflou\interfaces\applications\vendors\IVendor;
+use deflou\interfaces\extensions\triggers\IExtensionTriggerEventValue;
 use deflou\interfaces\instances\IInstance;
 use deflou\interfaces\resolvers\events\IResolvedEvent;
 use deflou\interfaces\triggers\events\ITriggerEvent;
 use deflou\interfaces\triggers\ITrigger;
 use deflou\interfaces\triggers\ITriggerService;
 use deflou\interfaces\triggers\operations\ITriggerOperation;
+use deflou\interfaces\triggers\values\IValueSense;
 use extas\components\exceptions\MissedOrUnknown;
 use extas\components\Item;
 use extas\interfaces\parameters\IParam;
 use extas\interfaces\parameters\IParametred;
 use extas\interfaces\repositories\IRepository;
+use Generator;
 
 /**
  * @method IRepository triggers()
@@ -55,16 +59,35 @@ class TriggerService extends Item implements ITriggerService
         $triggerEvent = $trigger->buildEvent();
         $resolvedEventParams = $event->getParamsValues();
         
-        foreach ($triggerEvent->eachParamValue() as $name => $triggerEventValue) {
+        foreach ($triggerEvent->eachParamValue() as $name => $triggerEventValues) {
 
             $incomeEventValue = $resolvedEventParams[$name] ?? null;
 
-            if (!$triggerEventValue->met($incomeEventValue)) {
+            $met = $this->isApplicableValues($triggerEventValues, $incomeEventValue);
+            if (!$met) {
                 return false;
             }
         }
 
         return true;
+    }
+
+    protected function isApplicableValues(Generator $triggerEventValues, $incomeEventValue): bool
+    {
+        $met = true;
+        foreach ($triggerEventValues as $triggerEventValue) {
+            /**
+             * @var IExtensionTriggerEventValue|IValueSense $triggerEventValue
+             */
+            $condMet = $triggerEventValue->met($incomeEventValue);
+            if ($triggerEventValue->buildEdge() == EConditionEdge::And) {
+                $met &= $condMet;
+            } else {
+                $met |= $condMet;
+            }
+        }
+
+        return $met;
     }
 
     /**

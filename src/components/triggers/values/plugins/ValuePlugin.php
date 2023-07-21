@@ -1,11 +1,11 @@
 <?php
-namespace deflou\components\triggers\operations;
+namespace deflou\components\triggers\values\plugins;
 
 use deflou\components\applications\THasApplicationName;
 use deflou\interfaces\instances\IInstance;
 use deflou\interfaces\resolvers\events\IResolvedEvent;
 use deflou\interfaces\triggers\ITrigger;
-use deflou\interfaces\triggers\operations\ITriggerOperationPlugin;
+use deflou\interfaces\triggers\values\plugins\IValuePlugin;
 use extas\components\Item;
 use extas\components\parameters\THasParams;
 use extas\components\THasClass;
@@ -13,25 +13,37 @@ use extas\components\THasDescription;
 use extas\components\THasName;
 use extas\components\THasStringId;
 
-class TriggerOperationPlugin extends Item implements ITriggerOperationPlugin
+class ValuePlugin extends Item implements IValuePlugin
 {
     use THasStringId;
     use THasName;
     use THasDescription;
-    use THasClass;
     use THasParams;
     use THasApplicationName;
+    use THasClass;
 
-    public function __invoke(string|int $triggerValue, IResolvedEvent $event): string|int
+    public function __invoke(string|int $value, IResolvedEvent $event): string|int
     {
         $plugin = $this->buildClassWithParameters();
-        return $plugin($triggerValue, $event);
+        return $plugin($value, $event, $this);
     }
 
-    public function getTemplateData(IInstance $eventInstance, ITrigger $trigger): array
+    public function getApplyToParams(): array
+    {
+        return $this[static::FIELD__APPLY_TO_PARAM] ?? [];
+    }
+
+    public function setApplyToParams(array $applyTo): static
+    {
+        $this[static::FIELD__APPLY_TO_PARAM] = $applyTo;
+
+        return $this;
+    }
+
+    public function getTemplateData(IInstance $instance, ITrigger $trigger): array
     {
         $plugin = $this->buildClassWithParameters();
-        return $plugin->getTemplateData($eventInstance, $trigger, $this);
+        return $plugin->getTemplateData($instance, $trigger, $this);
     }
 
     protected function getSubjectForExtension(): string

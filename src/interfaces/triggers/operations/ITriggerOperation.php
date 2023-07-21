@@ -1,6 +1,7 @@
 <?php
 namespace deflou\interfaces\triggers\operations;
 
+use deflou\interfaces\triggers\values\IValue;
 use extas\interfaces\IHasDescription;
 use extas\interfaces\IHasName;
 use extas\interfaces\IItem;
@@ -12,7 +13,7 @@ interface ITriggerOperation extends IItem, IHasName, IHasDescription, IHaveParam
     public const SUBJECT = 'deflou.trigger.operation';
 
     /**
-     * @return Generator|ITriggerOperationValue[]
+     * @return Generator|IValue[]
      */
     public function eachParamValue(): Generator;
 }
