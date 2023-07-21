@@ -8,12 +8,16 @@ use deflou\components\resolvers\operations\results\EResultStatus;
 use deflou\components\resolvers\ResolverHttp;
 use deflou\components\triggers\ETrigger;
 use deflou\components\triggers\ETriggerState;
+use deflou\components\triggers\events\conditions\Condition;
 use deflou\components\triggers\events\conditions\ConditionService;
 use deflou\components\triggers\events\conditions\EConditionEdge;
 use deflou\components\triggers\events\conditions\plugins\ConditionBasic;
 use deflou\components\triggers\THasTrigger;
+use deflou\components\triggers\Trigger;
 use deflou\components\triggers\TriggerService;
 use deflou\components\triggers\values\plugins\templates\TemplateContext;
+use deflou\components\triggers\values\plugins\ValuePlugin;
+use deflou\components\triggers\values\ValueSense;
 use deflou\components\triggers\values\ValueService;
 use deflou\interfaces\applications\IApplication;
 use deflou\interfaces\extensions\instances\IExtensionInstanceResolver;
@@ -123,7 +127,7 @@ class TriggerTest extends ExtasTestCase
                                 ],
                                 IExtensionTriggerEventValue::PARAM__EDGE => [
                                     IParam::FIELD__NAME => IExtensionTriggerEventValue::PARAM__EDGE,
-                                    IParam::FIELD__VALUE => EConditionEdge::And->value
+                                    IParam::FIELD__VALUE => EConditionEdge::Or->value
                                 ]
                             ]
                         ]
@@ -141,7 +145,7 @@ class TriggerTest extends ExtasTestCase
                     IParam::FIELD__NAME => 'param2',
                     IParam::FIELD__VALUE => [
                         [
-                            IValueSense::FIELD__PLUGINS_NAMES => ['event', 'now'],
+                            IValueSense::FIELD__PLUGINS_NAMES => ['text', 'event', 'now'],
                             IValueSense::FIELD__VALUE => 'Got @event.param1 as param1 from event at @now(Y-m-d)@'
                         ]
                     ]
@@ -379,6 +383,40 @@ class TriggerTest extends ExtasTestCase
             $this->assertArrayHasKey('items', $template);
             $this->assertIsMissedObjects($template['items']);
         }
+    }
+
+    public function testBasics(): void
+    {
+        $vp = new ValuePlugin();
+        $vp->setApplyToParams(['test']);
+        $this->assertEquals(['test'], $vp->getApplyToParams());
+
+        $vs = new ValueSense([
+            ValueSense::FIELD__PLUGINS_NAMES => ['test']
+        ]);
+        $vs->addPluginsNames('test0', 'test1');
+        $this->assertEquals(['test', 'test0', 'test1'], $vs->getPluginsNames());
+
+        $state = ETriggerState::Active;
+        $trigger = new Trigger();
+        $state->activate($trigger);
+        $this->assertEquals(ETriggerState::Active->value, $trigger->getState());
+
+        ETriggerState::Suspended->set($trigger);
+        $this->assertEquals(ETriggerState::Suspended->value, $trigger->getState());
+        $this->assertEquals('Остановлен', ETriggerState::Suspended->title('unknown lang'));
+        
+        ETriggerState::Deleted->delete($trigger);
+        $this->assertEquals(ETriggerState::Deleted->value, $trigger->getState());
+
+        ETriggerState::Suspended->suspend($trigger);
+        $this->assertEquals(ETriggerState::Suspended->value, $trigger->getState());
+
+        $this->assertEquals('И', EConditionEdge::And->to(EConditionEdge::LANG__RU));
+
+        $cond = new Condition();
+        $cond->setPlugin('test')->setCondition('eq');
+        $this->assertEquals([Condition::FIELD__PLUGIN => 'test', Condition::FIELD__CONDITION => 'eq'], $cond->__toArray());
     }
 
     protected function assertIsMissedObjects(array $item, string $message = ''): bool
