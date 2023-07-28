@@ -2,10 +2,13 @@
 namespace deflou\components\triggers\events\conditions;
 
 use deflou\interfaces\extensions\triggers\IExtensionTriggerEventValue;
+use deflou\interfaces\instances\IInstance;
 use deflou\interfaces\triggers\events\conditions\ICondition;
 use deflou\interfaces\triggers\events\conditions\IConditionPlugin;
 use deflou\interfaces\triggers\events\conditions\IConditionService;
+use deflou\interfaces\triggers\ITrigger;
 use deflou\interfaces\triggers\values\IValueSense;
+use deflou\interfaces\triggers\values\plugins\templates\ITemplateContext;
 use extas\components\Item;
 use extas\interfaces\repositories\IRepository;
 
@@ -58,6 +61,62 @@ class ConditionService extends Item implements IConditionService
 
         return $descriptions;
     }
+
+    public function getPluginsTemplates(IInstance $instance, ITrigger $trigger, ITemplateContext $context): array
+    {
+        $applyTo = [static::ANY];
+
+        if ($context->buildParams()->hasOne(static::PARAM__APPLY_TO)) {
+            $applyTo = array_merge($applyTo, $context->buildParams()->buildOne(static::PARAM__APPLY_TO)->getValue());
+        }
+
+        /**
+         * @var IConditionPlugin[] $plugins
+         */
+        $plugins = $this->conditionPlugins()->all([
+            IConditionPlugin::FIELD__APPLICATION_NAME => [$trigger->getApplication(ETrigger::Operation)->getName(), static::ANY],
+            IConditionPlugin::FIELD__APPLY_TO_PARAM => $applyTo
+        ]);
+
+        $result = [];
+
+        foreach ($plugins as $plugin) {
+            $data = $plugin->getTemplateData($instance, $trigger);
+            $template = null;
+            
+            $this->applyContextPlugins($data, $plugin, $template, $context);
+            $this->applyPluginPlugins($data, $plugin, $template, $context);
+
+            if (!$template) {
+                continue;
+            }
+
+            $result[$plugin->getName()] = $template;
+        }
+
+        return $result;
+    }
+
+    protected function applyContextPlugins(array $templateData, IConditionPlugin $conditionPlugin, mixed &$template, ITemplateContext $context): void
+    {
+        foreach ($this->getPluginsByStage(IStageConditionTemplate::NAME . $context) as $plugin) {
+            /**
+             * @var IStageConditionTemplate $plugin
+             */
+            $plugin($templateData, $valuePlugin, $template, $context);
+        }
+    }
+
+    protected function applyPluginPlugins(array $templateData, IConditionPlugin $conditionPlugin, mixed &$template, ITemplateContext $context): void
+    {
+        foreach ($this->getPluginsByStage(IStageConditionTemplate::NAME . $context . '.' . $conditionPlugin->getName()) as $plugin) {
+            /**
+             * @var IStageConditionTemplate $plugin
+             */
+            $plugin($templateData, $valuePlugin, $template, $context);
+        }
+    }
+
 
     protected function getSubjectForExtension(): string
     {

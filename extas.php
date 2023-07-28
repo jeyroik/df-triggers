@@ -5,8 +5,6 @@ use deflou\components\extensions\instances\ExtensionInstanceTriggers;
 use deflou\components\extensions\triggers\ExtensionTrigger;
 use deflou\components\extensions\triggers\ExtensionTriggerEventValue;
 use deflou\components\plugins\triggers\PluginTriggerOpTemplateArray;
-use deflou\components\triggers\events\conditions\plugins\ConditionBasic;
-use deflou\components\triggers\events\plugins\PluginList;
 use deflou\components\triggers\values\plugins\PluginEvent;
 use deflou\components\triggers\values\plugins\PluginNow;
 use deflou\components\triggers\values\plugins\PluginText;
@@ -16,7 +14,6 @@ use deflou\interfaces\extensions\triggers\IExtensionTrigger;
 use deflou\interfaces\extensions\triggers\IExtensionTriggerEventValue;
 use deflou\interfaces\instances\IInstance;
 use deflou\interfaces\stages\triggers\IStageTriggerTemplate;
-use deflou\interfaces\triggers\events\conditions\IConditionPlugin;
 use deflou\interfaces\triggers\ITrigger;
 use deflou\interfaces\triggers\values\IValueSense;
 use deflou\interfaces\triggers\values\IValueService;
@@ -56,14 +53,6 @@ return [
             IExtension::FIELD__INTERFACE => IExtensionTriggerEventValue::class,
             IExtension::FIELD__SUBJECT => IValueSense::SUBJECT,
             IExtension::FIELD__METHODS => ['met', 'getCondition', 'setCondition', 'getEdge', 'buildEdge']
-        ]
-    ],
-    "trigger_event_condition_plugins" => [
-        [
-            IConditionPlugin::FIELD__NAME => 'basic_conditions',
-            IConditionPlugin::FIELD__TITLE => 'Basic conditions',
-            IConditionPlugin::FIELD__DESCRIPTION => 'Full list of basic conditions for numbers and text',
-            IConditionPlugin::FIELD__CLASS => ConditionBasic::class
         ]
     ],
     "trigger_value_plugins" => [
