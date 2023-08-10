@@ -45,8 +45,8 @@ use extas\interfaces\IItem;
  *              "description": "...",
  *              "value": [
  *                      {
- *                          "value": "@now(Y.m.d)(-2d)@",
- *                          "plugins_names": ["now"],
+ *                          "value": "@event.par1 @now(Y.m.d)(-2d)@",
+ *                          "plugins_names": ["event", "now"],
  *                          "params": {
  *                              "<condition.dispatcher.name>": {
  *                                  "name": "<condition.dispatcher.name>",
