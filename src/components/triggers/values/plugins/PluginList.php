@@ -3,6 +3,8 @@ namespace deflou\components\triggers\events\plugins;
 
 use deflou\interfaces\instances\IInstance;
 use deflou\interfaces\resolvers\events\IResolvedEvent;
+use deflou\interfaces\templates\contexts\IContext;
+use deflou\interfaces\templates\IWithTemplate;
 use deflou\interfaces\triggers\ITrigger;
 use deflou\interfaces\triggers\values\plugins\IValuePlugin;
 use deflou\interfaces\triggers\values\plugins\IValuePluginDispatcher;
@@ -44,13 +46,13 @@ class PluginList extends Item implements IValuePluginDispatcher
         return Replace::please()->apply([static::NAME => $params])->to($value);
     }
 
-    public function getTemplateData(IInstance $instance, ITrigger $trigger, IValuePlugin $plugin): array
+    public function getTemplateData(IWithTemplate $templated, IContext|IContextTrigger $context): array
     {
-        if (!$plugin->buildParams()->hasOne(static::NAME)) {
+        if (!$templated->buildParams()->hasOne(static::NAME)) {
             return [];
         }
 
-        $list = $plugin->buildParams()->buildOne(static::NAME)->getValue();
+        $list = $templated->buildParams()->buildOne(static::NAME)->getValue();
         $result = [];
 
         foreach ($list as $item) {

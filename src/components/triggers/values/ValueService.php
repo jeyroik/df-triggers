@@ -1,17 +1,18 @@
 <?php
 namespace deflou\components\triggers\values;
 
+use deflou\components\templates\contexts\ContextHtmlTrigger;
+use deflou\components\templates\TemplateService;
 use deflou\components\triggers\ETrigger;
-use deflou\interfaces\instances\IInstance;
 use deflou\interfaces\triggers\values\IValueSense;
 use deflou\interfaces\resolvers\events\IResolvedEvent;
-use deflou\interfaces\stages\triggers\IStageTriggerTemplate;
+use deflou\interfaces\templates\contexts\IContext;
 use deflou\interfaces\triggers\ITrigger;
 use deflou\interfaces\triggers\values\IValueService;
 use deflou\interfaces\triggers\values\plugins\IValuePlugin;
-use deflou\interfaces\triggers\values\plugins\templates\ITemplateContext;
 
 use extas\components\Item;
+use extas\components\parameters\Param;
 use extas\interfaces\repositories\IRepository;
 
 /**
@@ -35,59 +36,19 @@ class ValueService extends Item implements IValueService
         return $this;
     }
 
-    public function getPluginsTemplates(IInstance $instance, ITrigger $trigger, ITemplateContext $context): array
+    public function getPluginsTemplates(ETrigger $et, ITrigger $trigger, IContext $context): array
     {
-        $applyTo = [static::ANY];
+        $ctx = new ContextHtmlTrigger($context->__toArray());
+        $ctx->addParam(new Param([
+            Param::FIELD__NAME => ContextHtmlTrigger::PARAM__TRIGGER,
+            Param::FIELD__VALUE => $trigger
+        ]))->addParam(new Param([
+            Param::FIELD__NAME => ContextHtmlTrigger::PARAM__FOR,
+            Param::FIELD__VALUE => $et
+        ]));
 
-        if ($context->buildParams()->hasOne(static::PARAM__APPLY_TO)) {
-            $applyTo = array_merge($applyTo, $context->buildParams()->buildOne(static::PARAM__APPLY_TO)->getValue());
-        }
-
-        /**
-         * @var IValuePlugin[] $plugins
-         */
-        $plugins = $this->triggerValuePlugins()->all([
-            IValuePlugin::FIELD__APPLICATION_NAME => [$trigger->getApplication(ETrigger::Operation)->getName(), static::ANY],
-            IValuePlugin::FIELD__APPLY_TO_PARAM => $applyTo
-        ]);
-
-        $result = [];
-
-        foreach ($plugins as $plugin) {
-            $data = $plugin->getTemplateData($instance, $trigger);
-            $template = null;
-            
-            $this->applyContextPlugins($data, $plugin, $template, $context);
-            $this->applyPluginPlugins($data, $plugin, $template, $context);
-
-            if (!$template) {
-                continue;
-            }
-
-            $result[$plugin->getName()] = $template;
-        }
-
-        return $result;
-    }
-
-    protected function applyContextPlugins(array $templateData, IValuePlugin $valuePlugin, mixed &$template, ITemplateContext $context): void
-    {
-        foreach ($this->getPluginsByStage(IStageTriggerTemplate::NAME . $context) as $plugin) {
-            /**
-             * @var IStageTriggerTemplate $plugin
-             */
-            $plugin($templateData, $valuePlugin, $template, $context);
-        }
-    }
-
-    protected function applyPluginPlugins(array $templateData, IValuePlugin $valuePlugin, mixed &$template, ITemplateContext $context): void
-    {
-        foreach ($this->getPluginsByStage(IStageTriggerTemplate::NAME . $context . '.' . $valuePlugin->getName()) as $plugin) {
-            /**
-             * @var IStageTriggerTemplate $plugin
-             */
-            $plugin($templateData, $valuePlugin, $template, $context);
-        }
+        $ts = new TemplateService();
+        return $ts->getTemplates($this->triggerValuePlugins(), $ctx);
     }
 
     protected function buildPlugin(string $name): ?IValuePlugin

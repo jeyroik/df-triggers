@@ -1,6 +1,9 @@
 <?php
 namespace deflou\components\triggers\events\conditions;
 
+use deflou\components\templates\contexts\ContextHtmlTrigger;
+use deflou\components\templates\TemplateService;
+use deflou\components\triggers\ETrigger;
 use deflou\interfaces\extensions\triggers\IExtensionTriggerEventValue;
 use deflou\interfaces\instances\IInstance;
 use deflou\interfaces\triggers\events\conditions\ICondition;
@@ -10,6 +13,7 @@ use deflou\interfaces\triggers\ITrigger;
 use deflou\interfaces\triggers\values\IValueSense;
 use deflou\interfaces\triggers\values\plugins\templates\ITemplateContext;
 use extas\components\Item;
+use extas\components\parameters\Param;
 use extas\interfaces\repositories\IRepository;
 
 /**
@@ -32,6 +36,8 @@ class ConditionService extends Item implements IConditionService
     {
         $pluginName = $condition->getPlugin();
 
+        echo "\n" . __METHOD__ . "\nPlugin name = " . $pluginName . "\n";
+
         if (!isset(self::$plugins[$pluginName])) {
             self::$plugins[$pluginName] = $this->triggerEventConditionPlugins()->one([IConditionPlugin::FIELD__NAME => $pluginName]);
         }
@@ -42,7 +48,10 @@ class ConditionService extends Item implements IConditionService
     public function met(IValueSense $value, string|int $incomeEventValue): bool
     {
         $condition = $this->buildCondition($value);
+        echo "\n" . __METHOD__ . "\n";
+        print_r($condition);
         $plugin = $this->buildPlugin($condition);
+        print_r($plugin);
 
         return $plugin($value->getValue(), $condition->getCondition(), $incomeEventValue);
     }
@@ -64,59 +73,18 @@ class ConditionService extends Item implements IConditionService
 
     public function getPluginsTemplates(IInstance $instance, ITrigger $trigger, ITemplateContext $context): array
     {
-        $applyTo = [static::ANY];
-
-        if ($context->buildParams()->hasOne(static::PARAM__APPLY_TO)) {
-            $applyTo = array_merge($applyTo, $context->buildParams()->buildOne(static::PARAM__APPLY_TO)->getValue());
-        }
-
-        /**
-         * @var IConditionPlugin[] $plugins
-         */
-        $plugins = $this->conditionPlugins()->all([
-            IConditionPlugin::FIELD__APPLICATION_NAME => [$trigger->getApplication(ETrigger::Operation)->getName(), static::ANY],
-            IConditionPlugin::FIELD__APPLY_TO_PARAM => $applyTo
-        ]);
-
-        $result = [];
-
-        foreach ($plugins as $plugin) {
-            $data = $plugin->getTemplateData($instance, $trigger);
-            $template = null;
-            
-            $this->applyContextPlugins($data, $plugin, $template, $context);
-            $this->applyPluginPlugins($data, $plugin, $template, $context);
-
-            if (!$template) {
-                continue;
-            }
-
-            $result[$plugin->getName()] = $template;
-        }
-
-        return $result;
+        $ctx = new ContextHtmlTrigger($context->__toArray());
+        $ctx->addParam(new Param([
+            Param::FIELD__NAME => ContextHtmlTrigger::PARAM__TRIGGER,
+            Param::FIELD__VALUE => $trigger
+        ]))->addParam(new Param([
+            Param::FIELD__NAME => ContextHtmlTrigger::PARAM__FOR,
+            Param::FIELD__VALUE => ETrigger::Event
+        ]));
+        
+        $ts = new TemplateService();
+        return $ts->getTemplates($this->conditionPlugins(), $ctx);
     }
-
-    protected function applyContextPlugins(array $templateData, IConditionPlugin $conditionPlugin, mixed &$template, ITemplateContext $context): void
-    {
-        foreach ($this->getPluginsByStage(IStageConditionTemplate::NAME . $context) as $plugin) {
-            /**
-             * @var IStageConditionTemplate $plugin
-             */
-            $plugin($templateData, $valuePlugin, $template, $context);
-        }
-    }
-
-    protected function applyPluginPlugins(array $templateData, IConditionPlugin $conditionPlugin, mixed &$template, ITemplateContext $context): void
-    {
-        foreach ($this->getPluginsByStage(IStageConditionTemplate::NAME . $context . '.' . $conditionPlugin->getName()) as $plugin) {
-            /**
-             * @var IStageConditionTemplate $plugin
-             */
-            $plugin($templateData, $valuePlugin, $template, $context);
-        }
-    }
-
 
     protected function getSubjectForExtension(): string
     {
