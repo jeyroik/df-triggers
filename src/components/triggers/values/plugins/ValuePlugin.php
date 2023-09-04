@@ -4,6 +4,9 @@ namespace deflou\components\triggers\values\plugins;
 use deflou\components\applications\THasApplicationName;
 use deflou\interfaces\instances\IInstance;
 use deflou\interfaces\resolvers\events\IResolvedEvent;
+use deflou\interfaces\templates\contexts\IContext;
+use deflou\interfaces\templates\contexts\IContextTrigger;
+
 use deflou\interfaces\triggers\ITrigger;
 use deflou\interfaces\triggers\values\plugins\IValuePlugin;
 use extas\components\Item;
@@ -40,10 +43,10 @@ class ValuePlugin extends Item implements IValuePlugin
         return $this;
     }
 
-    public function getTemplateData(IInstance $instance, ITrigger $trigger): array
+    public function getTemplateData(IContext|IContextTrigger $context): array
     {
         $plugin = $this->buildClassWithParameters();
-        return $plugin->getTemplateData($instance, $trigger, $this);
+        return $plugin->getTemplateData($this, $context);
     }
 
     protected function getSubjectForExtension(): string

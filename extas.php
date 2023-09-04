@@ -6,7 +6,6 @@ use deflou\components\extensions\triggers\ExtensionTrigger;
 use deflou\components\extensions\triggers\ExtensionTriggerEventValue;
 use deflou\components\plugins\triggers\PluginTriggerOpTemplateArray;
 use deflou\components\triggers\events\conditions\plugins\ConditionBasic;
-use deflou\components\triggers\events\plugins\PluginList;
 use deflou\components\triggers\values\plugins\PluginEvent;
 use deflou\components\triggers\values\plugins\PluginNow;
 use deflou\components\triggers\values\plugins\PluginText;
@@ -22,6 +21,7 @@ use deflou\interfaces\triggers\values\IValueSense;
 use deflou\interfaces\triggers\values\IValueService;
 use deflou\interfaces\triggers\values\plugins\IValuePlugin;
 use extas\interfaces\extensions\IExtension;
+use extas\interfaces\parameters\IParam;
 use extas\interfaces\plugins\IPlugin;
 
 return [
@@ -61,9 +61,13 @@ return [
     "trigger_event_condition_plugins" => [
         [
             IConditionPlugin::FIELD__NAME => 'basic_conditions',
-            IConditionPlugin::FIELD__TITLE => 'Basic conditions',
-            IConditionPlugin::FIELD__DESCRIPTION => 'Full list of basic conditions for numbers and text',
-            IConditionPlugin::FIELD__CLASS => ConditionBasic::class
+            IConditionPlugin::FIELD__CLASS => ConditionBasic::class,
+            IConditionPlugin::FIELD__PARAMS => [
+                ConditionBasic::PARAM__ITEMS => [
+                    IParam::FIELD__NAME => ConditionBasic::PARAM__ITEMS,
+                    IParam::FIELD__VALUE => ["eq", "neq", "like", "!like"]
+                ]
+            ]
         ]
     ],
     "trigger_value_plugins" => [

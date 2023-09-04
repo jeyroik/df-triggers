@@ -35,3 +35,21 @@ foreach ($triggers as $trigger) {
     }
 }
 ```
+
+# Context usage
+
+```php
+$ts = new TemplateService();
+$templates = $ts->getTemplates($someRepo, new ContextTrigger([
+    ContextTrigger::FIELD__PARAMS => [
+        ContextTrigger::PARAM__FOR => [
+            IParam::FIELD__NAME => ContextTrigger::PARAM__FOR,
+            IParam::FIELD__VALUE => ETrigger::Event
+        ],
+        ContextTrigger::PARAM__TRIGGER => [
+            IParam::FIELD__NAME => ContextTrigger::PARAM__TRIGGER,
+            IParam::FIELD__VALUE => $trigger
+        ]
+    ]
+]));
+```

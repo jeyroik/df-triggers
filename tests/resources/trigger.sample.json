@@ -24,8 +24,14 @@
                 "title": "Param 1",
                 "description": "Param 1",
                 "value": {
-                    "condition": {"plugin":"basic_conditions", "condition": "eq"},
-                    "value": "test"
+                    "value": "test",
+                    "plugins_names": ["text"],
+                    "params": {
+                        "basic_conditions": {
+                            "name": "basic_conditions",
+                            "value": "eq"
+                        }
+                    }
                 }
             }
         }
@@ -41,7 +47,7 @@
                 "description": "Param 2",
                 "value": {
                     "value": "Got @event.param1@ on @now(Y.m.d H:i:s)@",
-                    "plugins": ["event", "now"]
+                    "plugins_names": ["event", "now"]
                 }
             }
         }

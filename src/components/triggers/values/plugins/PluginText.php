@@ -3,6 +3,8 @@ namespace deflou\components\triggers\values\plugins;
 
 use deflou\interfaces\instances\IInstance;
 use deflou\interfaces\resolvers\events\IResolvedEvent;
+use deflou\interfaces\templates\contexts\IContext;
+use deflou\interfaces\templates\IWithTemplate;
 use deflou\interfaces\triggers\ITrigger;
 use deflou\interfaces\triggers\values\plugins\IValuePlugin;
 use deflou\interfaces\triggers\values\plugins\IValuePluginDispatcher;
@@ -16,7 +18,7 @@ class PluginText implements IValuePluginDispatcher
         return $triggerValue;
     }
 
-    public function getTemplateData(IInstance $instance, ITrigger $trigger, IValuePlugin $plugin): array
+    public function getTemplateData(IWithTemplate $templated, IContext|IContextTrigger $context): array
     {
         return [];
     }

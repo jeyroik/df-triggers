@@ -1,3 +1,8 @@
+# 4.0.0
+
+- Added `ContextTrigger`.
+- Change interface of `IValueService`.
+
 # 3.0.0
 
 - Unified events and operations values.

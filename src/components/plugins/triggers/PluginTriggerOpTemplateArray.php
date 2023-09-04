@@ -1,16 +1,16 @@
 <?php
 namespace deflou\components\plugins\triggers;
 
-use deflou\interfaces\stages\triggers\IStageTriggerTemplate;
-use deflou\interfaces\triggers\values\plugins\IValuePlugin;
-use deflou\interfaces\triggers\values\plugins\templates\ITemplateContext;
+use deflou\interfaces\stages\templates\IStageTemplate;
+use deflou\interfaces\templates\IWithTemplate;
+use deflou\interfaces\templates\contexts\IContext;
 use extas\components\plugins\Plugin;
 
-class PluginTriggerOpTemplateArray extends Plugin implements IStageTriggerTemplate
+class PluginTriggerOpTemplateArray extends Plugin implements IStageTemplate
 {
     public const CONTEXT__ARRAY = 'array';
 
-    public function __invoke(array $templateData, IValuePlugin $plugin, mixed &$template, ITemplateContext $context): void
+    public function __invoke(array $templateData, IWithTemplate $plugin, mixed &$template, IContext $context): void
     {
         if (!empty($templateData)) {
             $template = [

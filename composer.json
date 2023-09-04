@@ -4,6 +4,7 @@
   "require": {
     "jeyroik/df-applications": "4.*",
     "jeyroik/extas-conditions": "2.*",
+    "jeyroik/df-templates": "0.*",
     "guzzlehttp/guzzle": "7.*"
   },
   "require-dev": {
