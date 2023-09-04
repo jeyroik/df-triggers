@@ -36,8 +36,6 @@ class ConditionService extends Item implements IConditionService
     {
         $pluginName = $condition->getPlugin();
 
-        echo "\n" . __METHOD__ . "\nPlugin name = " . $pluginName . "\n";
-
         if (!isset(self::$plugins[$pluginName])) {
             self::$plugins[$pluginName] = $this->triggerEventConditionPlugins()->one([IConditionPlugin::FIELD__NAME => $pluginName]);
         }
@@ -48,10 +46,7 @@ class ConditionService extends Item implements IConditionService
     public function met(IValueSense $value, string|int $incomeEventValue): bool
     {
         $condition = $this->buildCondition($value);
-        echo "\n" . __METHOD__ . "\n";
-        print_r($condition);
         $plugin = $this->buildPlugin($condition);
-        print_r($plugin);
 
         return $plugin($value->getValue(), $condition->getCondition(), $incomeEventValue);
     }

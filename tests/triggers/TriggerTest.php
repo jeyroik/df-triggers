@@ -35,8 +35,10 @@ use deflou\interfaces\triggers\IHaveTrigger;
 use deflou\interfaces\triggers\ITrigger;
 use deflou\interfaces\triggers\operations\ITriggerOperation;
 use deflou\interfaces\triggers\values\IValueSense;
-use deflou\components\templates\contexts\Context;
 use deflou\components\templates\contexts\ContextAny;
+use deflou\components\triggers\values\plugins\PluginEvent;
+use deflou\interfaces\stages\templates\IStageTemplate;
+use deflou\interfaces\templates\contexts\IContextTrigger;
 use extas\components\Item;
 use extas\components\parameters\Param;
 use extas\components\plugins\Plugin;
@@ -366,13 +368,26 @@ class TriggerTest extends ExtasTestCase
         $vService = new ValueService();
         $vService->plugins()->create(new Plugin([
             Plugin::FIELD__CLASS => PluginTriggerOpTemplateArray::class,
-            Plugin::FIELD__STAGE => IStageTriggerTemplate::NAME . PluginTriggerOpTemplateArray::CONTEXT__ARRAY . '.event'
+            Plugin::FIELD__STAGE => IStageTemplate::NAME . PluginTriggerOpTemplateArray::CONTEXT__ARRAY . '.event'
         ]));
-        $templates = $vService->getPluginsTemplates(
-            ETrigger::Operation, 
-            $trigger, 
+        $vService->plugins()->create(new Plugin([
+            Plugin::FIELD__CLASS => PluginTriggerOpTemplateArray::class,
+            Plugin::FIELD__STAGE => IStageTemplate::NAME . PluginTriggerOpTemplateArray::CONTEXT__ARRAY . '.now'
+        ]));
+
+        $templates = $vService->getPluginsTemplates( 
             new ContextAny([
-                ContextAny::FIELD__NAME => PluginTriggerOpTemplateArray::CONTEXT__ARRAY
+                ContextAny::FIELD__NAME => PluginTriggerOpTemplateArray::CONTEXT__ARRAY,
+                ContextAny::FIELD__PARAMS => [
+                    IContextTrigger::PARAM__TRIGGER => [
+                        IParam::FIELD__NAME => IContextTrigger::PARAM__TRIGGER,
+                        IParam::FIELD__VALUE => $trigger
+                    ],
+                    IContextTrigger::PARAM__FOR => [
+                        IParam::FIELD__NAME => IContextTrigger::PARAM__FOR,
+                        IParam::FIELD__VALUE => ETrigger::Event
+                    ]
+                ]
             ])
         );
         $this->assertCount(2, $templates);

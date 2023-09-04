@@ -21,11 +21,17 @@ class PluginEvent implements IValuePluginDispatcher
 
     public function getTemplateData(IWithTemplate $templated, IContext|IContextTrigger $context): array
     {
+        $params = $context->buildParams();
+
+        if (!$params->hasAll([IContextTrigger::PARAM__TRIGGER, IContextTrigger::PARAM__FOR])) {
+            return [];
+        }
+
         /**
          * @var ITrigger $trigger
          */
-        $trigger  = $context->buildParams()->buildOne($context::PARAM__TRIGGER)->getValue();
-        $for      = $context->buildParams()->buildOne($context::PARAM__FOR)->getValue();
+        $trigger  = $params->buildOne(IContextTrigger::PARAM__TRIGGER)->getValue();
+        $for      = $params->buildOne(IContextTrigger::PARAM__FOR)->getValue();
         $instance = $trigger->getInstance($for);
 
         return $instance->buildEvents()->buildOne($trigger->buildEvent()->getName())->buildParams()->buildAll();

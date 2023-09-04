@@ -1,3 +1,7 @@
+# 3.1.0
+
+- Added `ContextTrigger`.
+
 # 3.0.0
 
 - Unified events and operations values.

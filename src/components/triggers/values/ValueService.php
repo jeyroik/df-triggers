@@ -1,18 +1,14 @@
 <?php
 namespace deflou\components\triggers\values;
 
-use deflou\components\templates\contexts\ContextHtmlTrigger;
 use deflou\components\templates\TemplateService;
-use deflou\components\triggers\ETrigger;
 use deflou\interfaces\triggers\values\IValueSense;
 use deflou\interfaces\resolvers\events\IResolvedEvent;
 use deflou\interfaces\templates\contexts\IContext;
-use deflou\interfaces\triggers\ITrigger;
 use deflou\interfaces\triggers\values\IValueService;
 use deflou\interfaces\triggers\values\plugins\IValuePlugin;
 
 use extas\components\Item;
-use extas\components\parameters\Param;
 use extas\interfaces\repositories\IRepository;
 
 /**
@@ -36,19 +32,9 @@ class ValueService extends Item implements IValueService
         return $this;
     }
 
-    public function getPluginsTemplates(ETrigger $et, ITrigger $trigger, IContext $context): array
+    public function getPluginsTemplates(IContext $context): array
     {
-        $ctx = new ContextHtmlTrigger($context->__toArray());
-        $ctx->addParam(new Param([
-            Param::FIELD__NAME => ContextHtmlTrigger::PARAM__TRIGGER,
-            Param::FIELD__VALUE => $trigger
-        ]))->addParam(new Param([
-            Param::FIELD__NAME => ContextHtmlTrigger::PARAM__FOR,
-            Param::FIELD__VALUE => $et
-        ]));
-
-        $ts = new TemplateService();
-        return $ts->getTemplates($this->triggerValuePlugins(), $ctx);
+        return (new TemplateService())->getTemplates($this->triggerValuePlugins(), $context);
     }
 
     protected function buildPlugin(string $name): ?IValuePlugin
