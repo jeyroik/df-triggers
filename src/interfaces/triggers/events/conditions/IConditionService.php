@@ -1,8 +1,8 @@
 <?php
 namespace deflou\interfaces\triggers\events\conditions;
 
-use deflou\interfaces\triggers\events\ITriggerEventValue;
 use deflou\interfaces\triggers\values\IValueSense;
+use deflou\interfaces\triggers\values\plugins\templates\ITemplateContext;
 use extas\interfaces\IItem;
 
 interface IConditionService extends IItem
@@ -16,4 +16,5 @@ interface IConditionService extends IItem
      * @return IConditionDescription[]
      */
     public function getDescriptions(): array;
+    public function getPluginsTemplates(ITemplateContext $context): array;
 }
