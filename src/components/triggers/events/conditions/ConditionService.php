@@ -3,13 +3,11 @@ namespace deflou\components\triggers\events\conditions;
 
 use deflou\components\templates\TemplateService;
 use deflou\interfaces\extensions\triggers\IExtensionTriggerEventValue;
-use deflou\interfaces\instances\IInstance;
+use deflou\interfaces\templates\contexts\IContext;
 use deflou\interfaces\triggers\events\conditions\ICondition;
 use deflou\interfaces\triggers\events\conditions\IConditionPlugin;
 use deflou\interfaces\triggers\events\conditions\IConditionService;
-use deflou\interfaces\triggers\ITrigger;
 use deflou\interfaces\triggers\values\IValueSense;
-use deflou\interfaces\triggers\values\plugins\templates\ITemplateContext;
 use extas\components\Item;
 use extas\interfaces\repositories\IRepository;
 
@@ -63,7 +61,7 @@ class ConditionService extends Item implements IConditionService
         return $descriptions;
     }
 
-    public function getPluginsTemplates(ITemplateContext $context): array
+    public function getPluginsTemplates(IContext $context): array
     {
         return (new TemplateService())->getTemplates($this->conditionPlugins(), $context);
     }
