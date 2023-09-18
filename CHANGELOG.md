@@ -1,3 +1,7 @@
+# 4.1.2
+
+- Fixed `IConditionService`.
+
 # 4.1.1
 
 - Fixed `ICondition`.
