@@ -1,3 +1,7 @@
+# 4.1.0
+
+- Added method `IConditionService::getPluginsTemplates()`.
+
 # 4.0.0
 
 - Added `ContextTrigger`.
