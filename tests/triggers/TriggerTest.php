@@ -6,7 +6,6 @@ use deflou\components\plugins\triggers\PluginTriggerOpTemplateArray;
 use deflou\components\resolvers\operations\ResolvedOperationHttp;
 use deflou\components\resolvers\operations\results\EResultStatus;
 use deflou\components\resolvers\ResolverHttp;
-use deflou\components\templates\contexts\ContextTrigger;
 use deflou\components\triggers\ETrigger;
 use deflou\components\triggers\ETriggerState;
 use deflou\components\triggers\events\conditions\Condition;
@@ -28,7 +27,6 @@ use deflou\interfaces\resolvers\events\IResolvedEvent;
 use deflou\interfaces\resolvers\IResolver;
 use deflou\interfaces\resolvers\operations\IResolvedOperationHttp;
 use deflou\interfaces\resolvers\operations\results\IOperationResultData;
-use deflou\interfaces\stages\triggers\IStageTriggerTemplate;
 use deflou\interfaces\triggers\events\conditions\IConditionPlugin;
 use deflou\interfaces\triggers\events\ITriggerEvent;
 use deflou\interfaces\triggers\IHaveTrigger;
@@ -36,7 +34,7 @@ use deflou\interfaces\triggers\ITrigger;
 use deflou\interfaces\triggers\operations\ITriggerOperation;
 use deflou\interfaces\triggers\values\IValueSense;
 use deflou\components\templates\contexts\ContextAny;
-use deflou\components\triggers\values\plugins\PluginEvent;
+use deflou\components\templates\contexts\ContextTrigger;
 use deflou\interfaces\stages\templates\IStageTemplate;
 use deflou\interfaces\templates\contexts\IContextTrigger;
 use extas\components\Item;
@@ -301,14 +299,12 @@ class TriggerTest extends ExtasTestCase
         ]));
         $cService->triggerEventConditionPlugins()->update($cPlugin);
 
-        $descriptions = $cService->getDescriptions();
-        $this->assertCount(2, $descriptions);
+        $descriptions = $cService->getPluginsTemplates(new ContextTrigger([
+            ContextTrigger::FIELD__NAME => PluginTriggerOpTemplateArray::CONTEXT__ARRAY
+        ]));
 
-        foreach ($descriptions as $d) {
-            $this->assertEquals('basic_conditions', $d->getPlugin());
-            $d->setPlugin('test');
-            $this->assertEquals('test', $d->getPlugin());
-        }
+        $this->assertCount(1, $descriptions);
+        $this->assertArrayHasKey('basic_conditions', $descriptions);
 
         $externalData = [
             ITriggerEvent::FIELD__NAME => 'test_event',

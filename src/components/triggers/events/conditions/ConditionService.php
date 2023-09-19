@@ -63,7 +63,7 @@ class ConditionService extends Item implements IConditionService
 
     public function getPluginsTemplates(IContext $context): array
     {
-        return (new TemplateService())->getTemplates($this->conditionPlugins(), $context);
+        return (new TemplateService())->getTemplates($this->triggerEventConditionPlugins(), $context);
     }
 
     protected function getSubjectForExtension(): string
