@@ -1,14 +1,9 @@
 <?php
 namespace deflou\interfaces\triggers\events\conditions;
 
-use extas\interfaces\IHasClass;
-use extas\interfaces\IHasDescription;
-use extas\interfaces\IHasName;
-use extas\interfaces\IHaveUUID;
-use extas\interfaces\IItem;
-use extas\interfaces\parameters\IHaveParams;
+use deflou\interfaces\templates\IWithTemplate;
 
-interface IConditionPlugin extends IItem, IHaveUUID, IHasClass, IHasName, IHasDescription, IHaveParams
+interface IConditionPlugin extends IWithTemplate
 {
     public const SUBJECT = 'deflou.trigger.event.condition.plugin';
 

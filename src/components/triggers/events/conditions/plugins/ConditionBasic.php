@@ -2,6 +2,8 @@
 namespace deflou\components\triggers\events\conditions\plugins;
 
 use deflou\components\triggers\events\conditions\ConditionDescription;
+use deflou\interfaces\templates\IWithTemplate;
+use deflou\interfaces\templates\contexts\IContext;
 use deflou\interfaces\triggers\events\conditions\IConditionPlugin;
 use deflou\interfaces\triggers\events\conditions\IConditionPluginDispatcher;
 use extas\components\conditions\ConditionParameter;
@@ -39,7 +41,13 @@ class ConditionBasic extends Item implements IConditionPluginDispatcher
         return $tmp->isConditionMet($eventValue);
     }
 
-    public function getDescriptions(IConditionPlugin $plugin): array
+    /**
+     * @deprecated 
+     *
+     * @param  IWithTemplate $plugin
+     * @return array
+     */
+    public function getDescriptions(IWithTemplate $plugin): array
     {
         $query = $plugin->buildParams()->hasOne(static::PARAM__ITEMS) 
             ? [ICondition::FIELD__ALIASES => $plugin->buildParams()->buildOne(static::PARAM__ITEMS)->getValue()]
@@ -61,6 +69,11 @@ class ConditionBasic extends Item implements IConditionPluginDispatcher
         }
 
         return $result;
+    }
+
+    public function getTemplateData(IWithTemplate $templated, IContext $context): array
+    {
+        return $this->getDescriptions($templated);
     }
 
     protected function getSubjectForExtension(): string

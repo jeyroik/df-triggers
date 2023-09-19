@@ -1,7 +1,10 @@
 <?php
 namespace deflou\interfaces\triggers\events\conditions;
 
-interface IConditionPluginDispatcher
+use deflou\interfaces\templates\IDispatcher;
+use deflou\interfaces\templates\IWithTemplate;
+
+interface IConditionPluginDispatcher extends IDispatcher
 {
     public function __invoke(string|int $triggerValue, string $condition, string|int $eventValue): bool;
 
@@ -9,5 +12,5 @@ interface IConditionPluginDispatcher
      * @param  IConditionPlugin $plugin
      * @return IConditionDescription[]
      */
-    public function getDescriptions(IConditionPlugin $plugin): array;
+    public function getDescriptions(IWithTemplate $plugin): array;
 }

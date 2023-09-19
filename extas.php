@@ -14,7 +14,8 @@ use deflou\interfaces\extensions\instances\IExtensionInstanceTriggers;
 use deflou\interfaces\extensions\triggers\IExtensionTrigger;
 use deflou\interfaces\extensions\triggers\IExtensionTriggerEventValue;
 use deflou\interfaces\instances\IInstance;
-use deflou\interfaces\stages\triggers\IStageTriggerTemplate;
+use deflou\interfaces\stages\templates\IStageTemplate;
+use deflou\interfaces\templates\ITemplateService;
 use deflou\interfaces\triggers\events\conditions\IConditionPlugin;
 use deflou\interfaces\triggers\ITrigger;
 use deflou\interfaces\triggers\values\IValueSense;
@@ -29,7 +30,7 @@ return [
     "plugins" => [
         [
             IPlugin::FIELD__CLASS => PluginTriggerOpTemplateArray::class,
-            IPlugin::FIELD__STAGE => IStageTriggerTemplate::NAME . PluginTriggerOpTemplateArray::CONTEXT__ARRAY
+            IPlugin::FIELD__STAGE => IStageTemplate::NAME . PluginTriggerOpTemplateArray::CONTEXT__ARRAY
         ]
     ],
     "extensions" => [
@@ -62,6 +63,8 @@ return [
         [
             IConditionPlugin::FIELD__NAME => 'basic_conditions',
             IConditionPlugin::FIELD__CLASS => ConditionBasic::class,
+            IConditionPlugin::FIELD__APPLICATION_NAME => ITemplateService::ANY,
+            IConditionPlugin::FIELD__APPLY_TO_PARAM => ITemplateService::ANY,
             IConditionPlugin::FIELD__PARAMS => [
                 ConditionBasic::PARAM__ITEMS => [
                     IParam::FIELD__NAME => ConditionBasic::PARAM__ITEMS,

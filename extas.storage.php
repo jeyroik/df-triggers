@@ -21,7 +21,7 @@ return [
             "namespace" => "deflou\\repositories",
             "item_class" => "deflou\\components\\triggers\\events\\conditions\\ConditionPlugin",
             "pk" => "id",
-            "aliases" => ["triggerEventConditionPlugins"],
+            "aliases" => ["triggerEventConditionPlugins", "conditionPlugins"],
             "hooks" => [],
             "code" => [
                 'create-before' => '\\' . RepoItem::class . '::setId($item);'
@@ -38,6 +38,6 @@ return [
                 'create-before' => '\\' . RepoItem::class . '::setId($item);'
                                   .'\\' . RepoItem::class . '::throwIfExist($this, $item, [\'name\']);'
             ]
-        ],
+        ]
     ]
 ];

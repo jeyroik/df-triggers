@@ -2,12 +2,9 @@
 namespace deflou\components\triggers\values\plugins;
 
 use deflou\components\applications\THasApplicationName;
-use deflou\interfaces\instances\IInstance;
 use deflou\interfaces\resolvers\events\IResolvedEvent;
 use deflou\interfaces\templates\contexts\IContext;
 use deflou\interfaces\templates\contexts\IContextTrigger;
-
-use deflou\interfaces\triggers\ITrigger;
 use deflou\interfaces\triggers\values\plugins\IValuePlugin;
 use extas\components\Item;
 use extas\components\parameters\THasParams;
