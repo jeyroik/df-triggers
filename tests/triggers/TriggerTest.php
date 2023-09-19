@@ -35,6 +35,7 @@ use deflou\interfaces\triggers\operations\ITriggerOperation;
 use deflou\interfaces\triggers\values\IValueSense;
 use deflou\components\templates\contexts\ContextAny;
 use deflou\components\templates\contexts\ContextTrigger;
+use deflou\components\triggers\events\conditions\ConditionPlugin;
 use deflou\interfaces\stages\templates\IStageTemplate;
 use deflou\interfaces\templates\contexts\IContextTrigger;
 use extas\components\Item;
@@ -305,6 +306,10 @@ class TriggerTest extends ExtasTestCase
 
         $this->assertCount(1, $descriptions);
         $this->assertArrayHasKey('basic_conditions', $descriptions);
+
+        $cp = new ConditionPlugin();
+        $cp->setApplyToParams(['some']);
+        $this->assertEquals(['some'], $cp->getApplyToParams());
 
         $externalData = [
             ITriggerEvent::FIELD__NAME => 'test_event',
