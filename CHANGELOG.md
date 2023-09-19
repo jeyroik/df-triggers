@@ -1,3 +1,7 @@
+# 4.1.3
+
+- Fixed `IConditionPlugin`.
+
 # 4.1.2
 
 - Fixed `IConditionService`.
