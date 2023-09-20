@@ -62,6 +62,7 @@ return [
     "trigger_event_condition_plugins" => [
         [
             IConditionPlugin::FIELD__NAME => 'basic_conditions',
+            IConditionPlugin::FIELD__TITLE => 'Базовые условия',
             IConditionPlugin::FIELD__CLASS => ConditionBasic::class,
             IConditionPlugin::FIELD__APPLICATION_NAME => ITemplateService::ANY,
             IConditionPlugin::FIELD__APPLY_TO_PARAM => ITemplateService::ANY,
