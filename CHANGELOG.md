@@ -1,3 +1,7 @@
+# 4.1.4
+
+- Fixed basic conditions title in the extas config.
+
 # 4.1.3
 
 - Fixed `IConditionPlugin`.
